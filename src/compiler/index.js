@@ -1,6 +1,10 @@
 
 
-import parse from './parse/index';
+
+
+import { parse } from './parse/index';
+
+
 
 
 
