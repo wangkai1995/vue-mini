@@ -1,9 +1,8 @@
 
 
 
-
 import { parse } from './parse/index';
-
+import { generateCode } from './generate';
 
 
 
@@ -13,6 +12,10 @@ import { parse } from './parse/index';
 export var compileTemplateToFn = function(template,options,context){
 	//开始解析模板 生成虚拟元素
 	var ast = parse(template.trim() , options);
+    console.log('AST',ast)
+    var render = generateCode(ast)
+    console.log('render',render)
+    
 }
 
 

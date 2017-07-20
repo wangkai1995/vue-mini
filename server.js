@@ -18,6 +18,7 @@ var webpackDevOptions = {
 
 app.use(require('webpack-dev-middleware')(compile,webpackDevOptions));
 
+
 app.get('*',function(reg,res){
 	res.sendFile(path.join(__dirname,'index.html'));
 });

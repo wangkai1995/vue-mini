@@ -10,8 +10,6 @@ window.onload = function(){
 		el:'#test'
 	})
 	
-	console.log(test)
-
 }
 
 
