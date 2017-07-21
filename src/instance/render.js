@@ -16,6 +16,7 @@ function queryDom(el){
 }
 
 
+
 //获取标签全部内容
 function getOuterHTML (el){
 	if(el.outerHTML){
@@ -43,9 +44,20 @@ export var initCompiler = function(vue){
 	const render = compileTemplateToFn(template,{
 		delimiters: option.delimiters,
 		warnError: warnError
-	},vue);
+	},vue);	
+	vue._render = render;
+}
+
+
+
+
+
+/**************  原型方法挂载   ***************/
+VueMini.prototype.$mount = function(){
 	
 }
+
+
 
 
 

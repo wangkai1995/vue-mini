@@ -7,8 +7,7 @@ export var generateCode = function(AST){
     var attrs = genreateAttr(AST.attrs);
     var children = generateChildren(AST.children)
 
-
-    return 'with(this){_c('+tag+','+attrs+','+children+')}'
+    return 'with(this){return _c("'+tag+'",'+attrs+','+children+',true)}'
 }
 
 
@@ -17,14 +16,32 @@ export var generateCode = function(AST){
 //生成子节点Code函数
 function generateChildren(children){
     if(!Array.isArray(children)|| children.length ===0 ){
-        return false;
+        return '[]';
     }
-    var Code
-    for(var i=0 i<children.length; i++){
+    var CodeList = [];
+    for(var i=0; i<children.length; i++){
+        var node = children[i];
+        switch(node.type){
+            case 1:
+                if( Array.isArray(node.children)||node.children.length >0 ){
+                    CodeList.push('_c("'+node.tagName+'",'+genreateAttr(node.attrs)+','+generateChildren(node.children)+')');
+                }else{
+                    CodeList.push('_c("'+node.tagName+'",'+genreateAttr(node.attrs)+',[])');
+                }
+                break;
+            case 2:
+                CodeList.push('_v(_s('+node.exp+'))');
+                break;
+            case 3:
+                CodeList.push('_v("'+node.text+'")');
+                break;
 
+        }
     }
-
+    return '['+CodeList.join(',')+']'
 }
+
+
 
 
 
@@ -42,6 +59,9 @@ function genreateAttr(attrs){
     }
     return JSON.stringify(attrsCode);
 }
+
+
+
 
 
 

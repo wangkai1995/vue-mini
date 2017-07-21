@@ -19,3 +19,13 @@ export var makeMap = function(key,valueString){
 
 
 
+//构建转译字符串
+export var toStringify = function(text){
+    if(typeof text === 'string'){
+        return text;
+    }
+    return text.toString();
+}
+
+
+
