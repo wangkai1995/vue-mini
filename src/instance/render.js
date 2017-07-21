@@ -52,10 +52,7 @@ export var initCompiler = function(vue){
 
 
 
-/**************  原型方法挂载   ***************/
-VueMini.prototype.$mount = function(){
-	
-}
+
 
 
 

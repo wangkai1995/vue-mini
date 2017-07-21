@@ -21,17 +21,25 @@ const VueMini = function(option){
 	this.self = this;
 	this._option = option;
 	//执行初始化
-	this.init();
+	this.$init();
 }
 
 
-
+/**************  原型方法   ***************/
 //初始化
-VueMini.prototype.init = function(){
+VueMini.prototype.$init = function(){
 	//初始化编译	
 	initCompiler(this);
 	//初始化data数据建立绑定
 	initData(this);
+
+}
+
+
+//挂载
+VueMini.prototype.$mount = function(){
+
+	
 
 }
 
