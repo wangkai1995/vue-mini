@@ -11,6 +11,7 @@ const Vnode =function(option){
     this.children = null;
     this.parent = null;
     this.text = null;
+    this.empty = null;
 
     return this;
 }
@@ -66,6 +67,7 @@ export var createVNodeText = function(text){
 export var createEmptyVnode = function(){
     var el = new Vnode();
     el.VnodeType = 1;
+    el.empty  = true
     return el;
 }
 

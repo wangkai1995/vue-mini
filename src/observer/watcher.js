@@ -37,16 +37,17 @@ Watcher.prototype.update = function(){
 	setDepTarget(this);
 	try{
 		var Vnode = this.render.call(this._vue);
-		this.Vnode = Vnode
-		var oldVnode = createEmptyVnode()
-		oldVnode.elm = el;
 		clearDepTarget();
+		var oldVnode = createEmptyVnode();
+		oldVnode.elm = el;
 		//将虚拟节点 更新到真实dom上
-		patch( oldVnode, Vnode, true /*isRoot*/ );
+		this.Vnode = patch( oldVnode, Vnode, true /*isRoot*/ );
 	}catch(e){
 		warnError('mount error: is VueMini render error, detail message a '+e);
 		clearDepTarget();
 	}
+	
+	console.log(this);
 }
 
 

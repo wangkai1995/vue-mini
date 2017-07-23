@@ -47,15 +47,12 @@ function generateChildren(children){
 
 //生成attributeCode函数
 function genreateAttr(attrs){
-    var attrsCode = [];
+    var attrsCode = {};
     if(!Array.isArray(attrs) || attrs.length === 0){
-        return '[]';
+        return '{}';
     }
-
     for(var i=0 ;i<attrs.length ;i++){
-        var attr = {}
-        attr[attrs[i].name] = attrs[i].value;
-        attrsCode.push(attr)
+        attrsCode[attrs[i].name] = attrs[i].value;
     }
     return JSON.stringify(attrsCode);
 }
