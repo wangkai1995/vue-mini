@@ -9,7 +9,7 @@ window.onload = function(){
 	var test = new VueMini({
 		el:'#test',
         data: {
-            name:'小二',
+            name:'阿迪王',
             age:17,
             family:{
                 parent:'老王',

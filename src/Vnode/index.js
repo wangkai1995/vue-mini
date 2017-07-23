@@ -35,7 +35,7 @@ export var createVNodeElement = function(tag,attrs,children,isRoot){
         }
     }
 
-
+    //为子节点绑定父节点关系
     function childrenBindParent(children,parent){
         if(!Array.isArray(children) ||children.length === 0){
             return false;
@@ -53,8 +53,6 @@ export var createVNodeElement = function(tag,attrs,children,isRoot){
 }   
 
 
-
-
 //构建虚拟文本节点
 export var createVNodeText = function(text){
     var el = new Vnode()
@@ -62,6 +60,15 @@ export var createVNodeText = function(text){
     el.text = text;
     return el;
 }
+
+
+//构建空的虚拟节点
+export var createEmptyVnode = function(){
+    var el = new Vnode();
+    el.VnodeType = 1;
+    return el;
+}
+
 
 
 

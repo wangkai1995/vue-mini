@@ -1,8 +1,9 @@
 
-
 import { toStringify } from '../share/utiliy/index';
 import { initCompiler } from './render';
 import { initData } from './data';
+
+import Watcher from '../observer/watcher';
 
 import {
 	createVNodeElement,
@@ -19,6 +20,7 @@ const VueMini = function(option){
 	}
 	this.id = uid++;
 	this.self = this;
+	this._el = option.el
 	this._option = option;
 	//执行初始化
 	this.$init();
@@ -32,16 +34,23 @@ VueMini.prototype.$init = function(){
 	initCompiler(this);
 	//初始化data数据建立绑定
 	initData(this);
-
+	//开始挂载
+	this.$mount();
+	
+	return this;
 }
+
 
 
 //挂载
 VueMini.prototype.$mount = function(){
-
-	
-
+	if(!this._render){
+		warnError('$mount error: VueMini._render  is not defined')
+	}
+	var $render = this._render;
+	this._watcher = new Watcher(this,$render);
 }
+
 
 
 /**********   render中使用  ***********/

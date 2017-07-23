@@ -29,8 +29,12 @@ export var defineDataToObserver = function(data){
                     return 
                 }
                 value = newVal;
+                dep.notify();
             },
             get:function(){
+                if(Dep.target){
+                    Dep.target.add(dep)
+                };
                 return value;
             }
         })
