@@ -30,6 +30,8 @@ function getOuterHTML (el){
 
 
 
+
+//初始化编译
 export var initCompiler = function(vue){
 	var template;
 	var option = vue._option
@@ -47,6 +49,7 @@ export var initCompiler = function(vue){
 	},vue);	
 	vue._render = render;
 }
+
 
 
 

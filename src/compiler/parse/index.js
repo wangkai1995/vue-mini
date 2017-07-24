@@ -2,17 +2,9 @@
 import { isNonPhrasingTag ,canBeleftOpenTag ,isUnaryTag } from '../../share/judge/element';
 import { parseHTML } from './html-parse';
 import { parseText } from './text-parse';
+import { parseAttrs }  from './attr-parse';
 
 
-
-//设置attribute映射
-function setAttributeMap(attrs){
-	var attribute = {};
-	for(var key in attrs){
-		attribute[key] = attrs[key]
-	}
-	return attribute;
-}
 
 
 
@@ -35,14 +27,16 @@ export  var parse = function(template ,options){
 			var element = {
 				type: 1,
 				tagName:tag,
-				attrs:attrs,
-				attrMap: setAttributeMap(attrs),
+				attrs:[],
 				children: [],
 			}
 			//如果根节点不存在
 			if(!root){
 				root = element;
 			}
+			//编译处理提取到的attribute
+			parseAttrs(element,attrs)
+
 			//父节点存在将自己加入父节点中
 			if(currentParent){
 				currentParent.children.push(element);
@@ -88,6 +82,12 @@ export  var parse = function(template ,options){
 
 	return root;
 }
+
+
+
+
+
+
 
 
 

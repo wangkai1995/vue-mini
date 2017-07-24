@@ -34,6 +34,8 @@ VueMini.prototype.$init = function(){
 	initCompiler(this);
 	//初始化data数据建立绑定
 	initData(this);
+	
+	return false;
 	//开始挂载
 	this.$mount();
 	

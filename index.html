@@ -10,18 +10,12 @@
 		<title>vue-mini</title>
 	</head>
 	<body>
+	
+		<!-- <br> 这个标签还有问题 需要修复 -->
 
-		<div id="test"  data-test="vue-mini" >
+		<div id="test">
 			他的名字{{name}}今年的年龄是{{age}}是个男孩
-			<h5>这是一个测试标题</h5>
-			<p>
-				他的实际年龄
-				<input type="text" model="age" />
-			</p>
-			<p>
-				他叫{{name}}
-			</p>
-			结束了
+			<input type="text" vm-model="age" />
 		</div>
 
 		
