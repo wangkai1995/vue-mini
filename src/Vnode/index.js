@@ -1,7 +1,5 @@
 
 
-
-
 //虚拟节点
 const Vnode =function(option){
     this.VnodeType = null;
@@ -9,6 +7,8 @@ const Vnode =function(option){
     this.elm = null;
     this.attrs = null;
     this.children = null;
+    this.events = null;
+    this.directive = null;
     this.parent = null;
     this.text = null;
     this.empty = null;
@@ -20,12 +20,14 @@ const Vnode =function(option){
 
 
 //构建虚拟节点
-export var createVNodeElement = function(tag,attrs,children,isRoot){
+export var createVNodeElement = function(tag,attrs,children,events,directives,isRoot){
     var el = new Vnode()
     el.VnodeType = 1;
     el.tagName = tag;
     el.attrs = attrs;
     el.children = children;
+    el.events = events;
+    el.directives = directives;
 
     //根组件这里做下特殊处理 给子组件遍历一次 绑定父组件关系
     //这里可能存在性能损耗
@@ -52,6 +54,8 @@ export var createVNodeElement = function(tag,attrs,children,isRoot){
 
     return el;
 }   
+
+
 
 
 //构建虚拟文本节点

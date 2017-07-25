@@ -10,10 +10,10 @@ import { queryNode } from '../vnode/dom-operation';
 const Watcher = function(vue,render){
 	this._vue = vue;
 	this.depId = [];
-	this.render = render;
+	this._render = render;
 	this.Vnode = null;
 	//首次挂载
-	this.update();
+	this.render(true/*isRoot*/);
 }
 
 //添加绑定
@@ -28,6 +28,14 @@ Watcher.prototype.add = function(dep){
 
 //更新
 Watcher.prototype.update = function(){
+	var self = this;
+	setTimeout(function(){
+		self.render.call(self,false)
+	},0);
+}
+
+
+Watcher.prototype.render = function(isRoot){
 	var el = queryNode(this._vue._el);
 	if(!el){
 		warnError('mount error: is new VueMini params el is no query dom');
@@ -36,20 +44,21 @@ Watcher.prototype.update = function(){
 
 	setDepTarget(this);
 	try{
-		var Vnode = this.render.call(this._vue);
+		var Vnode = this._render.call(this._vue);
 		clearDepTarget();
-		var oldVnode = createEmptyVnode();
-		oldVnode.elm = el;
+		if(this.Vnode){
+			var oldVnode = this.Vnode;
+		}else{
+			var oldVnode = createEmptyVnode();
+			oldVnode.elm = el;
+		}
 		//将虚拟节点 更新到真实dom上
-		this.Vnode = patch( oldVnode, Vnode, true /*isRoot*/ );
+		this.Vnode = patch( oldVnode, Vnode, isRoot /*isRoot*/ );
 	}catch(e){
 		warnError('mount error: is VueMini render error, detail message a '+e);
 		clearDepTarget();
 	}
-	
-	console.log(this);
 }
-
 
 
 

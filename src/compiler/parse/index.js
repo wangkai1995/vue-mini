@@ -28,6 +28,8 @@ export  var parse = function(template ,options){
 				type: 1,
 				tagName:tag,
 				attrs:[],
+				event:[],
+				directive:[],
 				children: [],
 			}
 			//如果根节点不存在

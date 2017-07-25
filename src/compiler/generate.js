@@ -6,8 +6,10 @@ export var generateCode = function(AST){
     var tag = AST.tagName;
     var attrs = genreateAttr(AST.attrs);
     var children = generateChildren(AST.children)
+    var EventCode = generateEvent(AST.event);
+    var directiveCode = generateDirective(AST.directive);
 
-    return 'with(this){return _c("'+tag+'",'+attrs+','+children+',true)}'
+    return 'with(this){return _c("'+tag+'",'+attrs+','+children+','+EventCode+','+directiveCode+',true)}'
 }
 
 
@@ -23,10 +25,15 @@ function generateChildren(children){
         var node = children[i];
         switch(node.type){
             case 1:
+                //解析生成事件
+                var EventCode = generateEvent(node.event);
+                //解析指令
+                var directiveCode = generateDirective(node.directive);
+                //递归绑定子节点
                 if( Array.isArray(node.children)||node.children.length >0 ){
-                    CodeList.push('_c("'+node.tagName+'",'+genreateAttr(node.attrs)+','+generateChildren(node.children)+')');
+                    CodeList.push('_c("'+node.tagName+'",'+genreateAttr(node.attrs)+','+generateChildren(node.children)+','+EventCode+','+directiveCode+')');
                 }else{
-                    CodeList.push('_c("'+node.tagName+'",'+genreateAttr(node.attrs)+',[])');
+                    CodeList.push('_c("'+node.tagName+'",'+genreateAttr(node.attrs)+',[],'+EventCode+','+directiveCode+')');
                 }
                 break;
             case 2:
@@ -41,6 +48,46 @@ function generateChildren(children){
     return '['+CodeList.join(',')+']'
 }
 
+
+
+
+//生成事件Code函数
+function generateEvent(events){
+    if( !Array.isArray(events)|| events.length ===0 ){
+        return '[]';
+    }
+
+    var EventCodeList = [];
+    
+    for(var i=0; i<events.length ;i++){
+        var eve = events[i];
+        EventCodeList.push('{name:"'+eve.name+'",exp:_method["'+eve.exp+'"]}')
+    }
+
+    return '['+EventCodeList.join(',')+']'
+}
+
+
+
+
+//生成指令Code函数
+function generateDirective(directives){
+    if( !Array.isArray(directives)|| directives.length ===0 ){
+        return '[]';
+    }
+
+    var directiveCode = [];
+    for(var i=0; i<directives.length ;i++){
+        var direc = directives[i];
+        if(direc.name === 'model'){
+            directiveCode.push('{name:"'+direc.name+'",exp:function(val){ '+direc.exp+' = val },value:'+direc.exp+'}')
+            continue;
+        }
+        directiveCode.push('{name:"'+direc.name+'",exp:'+direc.exp+'}')
+    }
+
+    return '['+directiveCode.join(',')+']'
+}
 
 
 

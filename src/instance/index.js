@@ -22,6 +22,10 @@ const VueMini = function(option){
 	this.self = this;
 	this._el = option.el
 	this._option = option;
+
+	//暂时测试的
+	this._method = option.method;
+
 	//执行初始化
 	this.$init();
 }
@@ -34,8 +38,6 @@ VueMini.prototype.$init = function(){
 	initCompiler(this);
 	//初始化data数据建立绑定
 	initData(this);
-	
-	return false;
 	//开始挂载
 	this.$mount();
 	
