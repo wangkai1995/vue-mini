@@ -2,6 +2,7 @@
 import warnError from './error';
 
 
+
 //设置映射
 export var makeMap = function(key,valueString){
 	var map = {};
@@ -19,6 +20,7 @@ export var makeMap = function(key,valueString){
 
 
 
+
 //构建转译字符串
 export var toStringify = function(text){
     if(typeof text === 'string'){
@@ -26,6 +28,8 @@ export var toStringify = function(text){
     }
     return text.toString();
 }
+
+
 
 
 

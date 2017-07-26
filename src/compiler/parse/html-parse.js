@@ -157,7 +157,6 @@ export var parseHTML = function(html, option){
 				match.end = index;
 				advance(end[0].length)
 			}
-
 			return match;
 		}
 	}

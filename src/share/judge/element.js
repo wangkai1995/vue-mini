@@ -20,7 +20,7 @@ export var canBeleftOpenTag = makeMap('beleftOpenTag',
 
 //自闭和标签
 export var isUnaryTag = makeMap('unaryTag',
-	'embed,img,image,input,link,meta'
+	'embed,img,image,input,link,meta,br'
 );
 
 

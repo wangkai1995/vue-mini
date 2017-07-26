@@ -12,17 +12,21 @@
 	<body>
 	
 		<!-- <br> 这个标签还有问题 需要修复 -->
-
 		<div id="test">
-			<h1 vm-onClick="testClick">这是一个测试标题</h1>
-			他的名字{{name}}      今年的年龄是{{age}}    是个男孩
-			<input type="text" vm-model="age" />
+			<h5 vm-onClick="testClick">点我获取当前时间:{{time}}</h5>
+			他的名字: {{name}}<br>
+			今年的年龄是{{age}}
+			<p><input type="text" vm-model="name" /></p>
+			<p>是个男孩</p>
+			<div vm-for="item in family track $index">关系是{{item.relation}} 名字是:{{item.name}}</div>
 		</div>
 
 		
 	</body>
 	<script src="/static/app.js" type="text/javascript" charset="utf-8"></script>
 </html>
+
+
 
 
 

@@ -24,11 +24,12 @@ const VueMini = function(option){
 	this._option = option;
 
 	//暂时测试的
-	this._method = option.method;
+	this._method = option.method? option.method : false ;
 
 	//执行初始化
 	this.$init();
 }
+
 
 
 /**************  原型方法   ***************/
@@ -38,6 +39,9 @@ VueMini.prototype.$init = function(){
 	initCompiler(this);
 	//初始化data数据建立绑定
 	initData(this);
+
+	return false;
+
 	//开始挂载
 	this.$mount();
 	
@@ -66,6 +70,7 @@ VueMini.prototype._v = createVNodeText;
 
 
 export default  VueMini;
+
 
 
 

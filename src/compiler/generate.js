@@ -83,7 +83,10 @@ function generateDirective(directives){
             directiveCode.push('{name:"'+direc.name+'",exp:function(val){ '+direc.exp+' = val },value:'+direc.exp+'}')
             continue;
         }
-        directiveCode.push('{name:"'+direc.name+'",exp:'+direc.exp+'}')
+        if(direc.name === 'for'){
+            console.log(directives)
+            continue;
+        }
     }
 
     return '['+directiveCode.join(',')+']'
