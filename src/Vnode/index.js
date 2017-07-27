@@ -32,6 +32,7 @@ export var createVNodeElement = function(tag,attrs,children,events,directives,is
     el.events = events;
     el.directives = directives;
 
+
     //根组件这里做下特殊处理 给子组件遍历一次 绑定父组件关系
     //这里可能存在性能损耗
     if(isRoot){
@@ -50,8 +51,9 @@ export var createVNodeElement = function(tag,attrs,children,events,directives,is
             var node = children[i]
             //vm-for 接收的数据特殊处理 这里还不优雅 需要进一步处理
             if(Array.isArray(node)){
-                node.map(function(item){
-                    children.push(item);
+                node.map(function(item,index){
+                    index = i+1+index;
+                    children.splice(index,0,item);
                 })
                 children.splice(i,1);
                 continue;

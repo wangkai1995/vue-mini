@@ -194,19 +194,25 @@ var updateAttrs = function(oldNode,Vnode){
 
 
 //更新子节点
+//这里存在问题 同一级节点 老节点删除一个  位置出现错误变化
+//需要修改
 var updateChildren = function(oldChildren,children){
 	//子节点递归更新
 	for(var i=0 ;i<children.length ;i++){
-		var oldVnode
+		var Vnode = children[i];
+		var oldVnode;
+		console.log(Vnode, oldChildren[i] ,111111111);
+
 		if(oldChildren[i]){
 			oldVnode = oldChildren[i]
-			delete oldChildren[i];
+			oldChildren.splice(i,1);
 		}else{
 			oldVnode = false;
 		}
-		var Vnode = children[i];
+		
 		updateElement(oldVnode,Vnode);
 	}
+	console.log(oldChildren,111)
 	//删除余下的老节点
 	for(var i=0; i<oldChildren.length ;i++){
 		updateElement(oldChildren[i],false);
@@ -237,7 +243,9 @@ export var patch = function(oldNode,Vnode,isRoot){
 	}else if(oldNode && Vnode ){
 		//不是的话 那么更新对比节点
 		// console.log('更新节点')
+		console.log(oldNode,Vnode)
 		updateElement(oldNode,Vnode)
+		return false;
 	}
 	return Vnode;
 }

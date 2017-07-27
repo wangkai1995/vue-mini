@@ -5,7 +5,14 @@ import VueMini from './instance/index';
 
 
 window.onload = function(){
-        var family = [{relation:'父亲',name:'老王'},{relation:'母亲',name:'乱写的'}];
+        var family = [
+                {relation:'父亲',name:'老王'},
+                {relation:'母亲',name:'乱写的'},
+                {relation:'母亲',name:'乱写的'},
+                {relation:'母亲',name:'乱写的'},
+                {relation:'母亲',name:'乱写的'},
+                {relation:'母亲',name:'乱写的'},
+        ];
         var test = new VueMini({
             el:'#test',
             data: {
@@ -21,9 +28,13 @@ window.onload = function(){
                 }
             }
         })
-        setInterval(function(){
+
+        var time = setInterval(function(){
             test.age += 1;
+            test.family.pop();
+            clearInterval(time)
         },1000)
+
 }
 
 
