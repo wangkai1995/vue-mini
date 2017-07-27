@@ -14,6 +14,17 @@ export var generateCode = function(AST){
 
 
 
+//vm-for directive特殊生成
+function generateForCode(node){
+    var tag = node.tagName;
+    var attrs = genreateAttr(node.attrs);
+    var children = generateChildren(node.children)
+    var EventCode = generateEvent(node.event);
+    var directiveCode = generateDirective(node.directive);
+    return '_l('+node.forSource+',function('+node.forkey+'){ return _c("'+tag+'",'+attrs+','+children+','+EventCode+','+directiveCode+') })'
+}
+
+
 
 //生成子节点Code函数
 function generateChildren(children){
@@ -23,6 +34,12 @@ function generateChildren(children){
     var CodeList = [];
     for(var i=0; i<children.length; i++){
         var node = children[i];
+        //如果是vm-for命令特殊处理
+        if(node.isFor){
+            CodeList.push(generateForCode(node))
+            continue;
+        }
+        //普通子节点处理
         switch(node.type){
             case 1:
                 //解析生成事件
@@ -42,7 +59,6 @@ function generateChildren(children){
             case 3:
                 CodeList.push('_v("'+node.text+'")');
                 break;
-
         }
     }
     return '['+CodeList.join(',')+']'
@@ -83,14 +99,11 @@ function generateDirective(directives){
             directiveCode.push('{name:"'+direc.name+'",exp:function(val){ '+direc.exp+' = val },value:'+direc.exp+'}')
             continue;
         }
-        if(direc.name === 'for'){
-            console.log(directives)
-            continue;
-        }
     }
 
     return '['+directiveCode.join(',')+']'
 }
+
 
 
 

@@ -1,6 +1,10 @@
 
+import { warnError } from '../../share/utiliy/error';
+
+
 var eventReg = /vm-on([a-zA-Z]+)/;
 var directiveReg = /vm-([a-z]+)/;
+var forReg = /^\s*([\w]+)\s*in\s*([\w]+)/;
 
 
 //设置attribute映射
@@ -37,6 +41,8 @@ export function parseAttrs(astElm ,attrs){
         //处理事件
         processEvent(elm,key,attrsMap)
     }
+    //特殊处理vm-for
+    processFor(elm)
     //处理剩余的attr
     processSurplus(elm,attrsMap)
 }
@@ -54,6 +60,37 @@ function processDirective(elm,attrKey,attrMap){
     directive.exp = getAttributeMap(attrMap,attrKey);
     elm.directive.push(directive);
 }
+
+
+
+
+//处理vm-for指令
+function processFor(elm){
+    if(!Array.isArray(elm.directive) || elm.directive.length === 0){
+        return false;
+    }
+    var directive;
+    for(var i=0 ; i<elm.directive.length ;i++){
+        if(elm.directive[i].name === 'for'){
+            directive = elm.directive[i];
+            break;
+        }
+    }
+    if(!directive){
+        return false;
+    }
+    elm.isFor = true;
+    var forMatch = directive.exp.match(forReg);
+    if(forMatch && forMatch[1] && forMatch[2]){
+        elm.forkey = forMatch[1];
+        elm.forSource = forMatch[2];
+    }else{
+        warnError('compiler error: directive vm-for parse is error')
+        elm.isFor = false;
+        return false;
+    }
+}
+
 
 
 

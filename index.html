@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -10,18 +11,16 @@
 		<title>vue-mini</title>
 	</head>
 	<body>
-	
-		<!-- <br> 这个标签还有问题 需要修复 -->
 		<div id="test">
 			<h5 vm-onClick="testClick">点我获取当前时间:{{time}}</h5>
 			他的名字: {{name}}<br>
 			今年的年龄是{{age}}
 			<p><input type="text" vm-model="name" /></p>
 			<p>是个男孩</p>
-			<div vm-for="item in family track $index">关系是{{item.relation}} 名字是:{{item.name}}</div>
+			<div vm-for="item in family">
+				家人名字是:{{item.name}},关系是{{item.relation}} 
+			</div>
 		</div>
-
-		
 	</body>
 	<script src="/static/app.js" type="text/javascript" charset="utf-8"></script>
 </html>

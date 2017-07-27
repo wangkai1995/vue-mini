@@ -1,4 +1,8 @@
 
+import { isObject } from '../share/judge/util';
+import { warnError } from '../share/utiliy/error';
+
+
 
 //虚拟节点
 const Vnode =function(option){
@@ -15,7 +19,6 @@ const Vnode =function(option){
 
     return this;
 }
-
 
 
 
@@ -45,6 +48,14 @@ export var createVNodeElement = function(tag,attrs,children,events,directives,is
         }
         for(var i=0; i<children.length ;i++){
             var node = children[i]
+            //vm-for 接收的数据特殊处理 这里还不优雅 需要进一步处理
+            if(Array.isArray(node)){
+                node.map(function(item){
+                    children.push(item);
+                })
+                children.splice(i,1);
+                continue;
+            }
             node.parent = parent
             if(Array.isArray(node.children) && node.children.length > 0){
                 childrenBindParent(node.children,node)
@@ -54,7 +65,6 @@ export var createVNodeElement = function(tag,attrs,children,events,directives,is
 
     return el;
 }   
-
 
 
 
@@ -73,6 +83,25 @@ export var createEmptyVnode = function(){
     el.VnodeType = 1;
     el.empty  = true
     return el;
+}
+
+
+//创建列表虚拟节点
+export var createListVNode = function(source,generatefn){
+    if(!Array.isArray(source) && !isObject(source)){
+        warnError('vm-for error: '+source+' is not array or object ')
+    }
+    var VNode = []
+    if( Array.isArray(source)   ){
+        VNode = source.map(function(item){
+            return generatefn(item);
+        })
+    }else{
+        for(var key in source){
+            VNode.push( generatefn(source[key]) )
+        }
+    }
+    return VNode
 }
 
 

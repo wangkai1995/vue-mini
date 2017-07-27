@@ -1,5 +1,6 @@
 
 import { isNonPhrasingTag ,canBeleftOpenTag ,isUnaryTag } from '../../share/judge/element';
+import { warnError } from '../../share/utiliy/error';
 import { parseHTML } from './html-parse';
 import { parseText } from './text-parse';
 import { parseAttrs }  from './attr-parse';
@@ -27,17 +28,24 @@ export  var parse = function(template ,options){
 			var element = {
 				type: 1,
 				tagName:tag,
+				// isFor: false,
+				// forkey: null,     vm-for专属数据
+				// forSource: null
 				attrs:[],
 				event:[],
 				directive:[],
 				children: [],
 			}
-			//如果根节点不存在
-			if(!root){
-				root = element;
-			}
+			
 			//编译处理提取到的attribute
 			parseAttrs(element,attrs)
+			//如果根节点不存在
+			if(!root){
+				if(element.isFor){
+					return warnError('compiler error: rootElement  can`t  is vm-for directive')
+				}
+				root = element;
+			}
 
 			//父节点存在将自己加入父节点中
 			if(currentParent){

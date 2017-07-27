@@ -1,5 +1,5 @@
 
-import { toStringify } from '../share/utiliy/index';
+import { toStringify ,warnError } from '../share/utiliy/index';
 import { initCompiler } from './render';
 import { initData } from './data';
 
@@ -8,6 +8,7 @@ import Watcher from '../observer/watcher';
 import {
 	createVNodeElement,
 	createVNodeText,
+	createListVNode,
 } from '../VNode/index';
 
 
@@ -40,8 +41,6 @@ VueMini.prototype.$init = function(){
 	//初始化data数据建立绑定
 	initData(this);
 
-	return false;
-
 	//开始挂载
 	this.$mount();
 	
@@ -65,6 +64,7 @@ VueMini.prototype.$mount = function(){
 VueMini.prototype._s = toStringify;
 VueMini.prototype._c = createVNodeElement;
 VueMini.prototype._v = createVNodeText;
+VueMini.prototype._l = createListVNode;
 
 
 
