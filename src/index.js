@@ -7,11 +7,11 @@ import VueMini from './instance/index';
 window.onload = function(){
         var family = [
                 {relation:'父亲',name:'老王'},
-                {relation:'母亲',name:'乱写的'},
-                {relation:'母亲',name:'乱写的'},
-                {relation:'母亲',name:'乱写的'},
-                {relation:'母亲',name:'乱写的'},
-                {relation:'母亲',name:'乱写的'},
+                {relation:'母亲1',name:'乱写的'},
+                {relation:'母亲2',name:'乱写的'},
+                {relation:'母亲3',name:'乱写的'},
+                {relation:'母亲4',name:'乱写的'},
+                {relation:'母亲4',name:'乱写的'},
         ];
         var test = new VueMini({
             el:'#test',
@@ -29,10 +29,15 @@ window.onload = function(){
             }
         })
 
+            
         var time = setInterval(function(){
             test.age += 1;
-            test.family.pop();
-            clearInterval(time)
+            if( test.age< 20){
+                test.family.splice(4,0,{relation:'阿里巴巴',name:'四十大盗'});   
+            }
+            if(test.age > 20 && test.age < 22){
+                test.family.splice(2,0,{relation:'走四方',name:'我来也'}); 
+            }
         },1000)
 
 }

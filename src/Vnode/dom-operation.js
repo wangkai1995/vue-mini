@@ -61,8 +61,8 @@ export var appendChild = function(el,child){
 
 
 //插入新节点
-export var insertBefoce = function(el,newChild,child){
-	el.insertBefoce(newChild,child);
+export var insertBefore = function(el,newChild,child){
+	el.insertBefore(newChild,child);
 }
 
 

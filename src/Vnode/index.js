@@ -3,7 +3,6 @@ import { isObject } from '../share/judge/util';
 import { warnError } from '../share/utiliy/error';
 
 
-
 //虚拟节点
 const Vnode =function(option){
     this.VnodeType = null;
@@ -12,7 +11,7 @@ const Vnode =function(option){
     this.attrs = null;
     this.children = null;
     this.events = null;
-    this.directive = null;
+    this.directives = null;
     this.parent = null;
     this.text = null;
     this.empty = null;
@@ -31,12 +30,15 @@ export var createVNodeElement = function(tag,attrs,children,events,directives,is
     el.children = children;
     el.events = events;
     el.directives = directives;
+    el.beforeNode = null;
+    el.nextNode = null
 
 
     //根组件这里做下特殊处理 给子组件遍历一次 绑定父组件关系
     //这里可能存在性能损耗
     if(isRoot){
         el.parent = document.body;
+        el.isRoot = true;
         if(Array.isArray(el.children) &&el.children.length > 0){
             childrenBindParent(el.children,el)
         }
@@ -58,13 +60,20 @@ export var createVNodeElement = function(tag,attrs,children,events,directives,is
                 children.splice(i,1);
                 continue;
             }
+            //建立兄弟节点关系 因为vm-for的关系 这里后期要重新处理
+            if(i>0){
+                node.beforeNode  =  children[i-1];
+            }
+            if(i <children.length ){
+                 node.nextNode  =  children[i+1];
+            }
+            //建立父节点关系
             node.parent = parent
             if(Array.isArray(node.children) && node.children.length > 0){
                 childrenBindParent(node.children,node)
             }
         }
     }
-
     return el;
 }   
 

@@ -4,17 +4,16 @@ import * as nodeOp from './dom-operation';
 
 
 /**************************    创建部分         *****************************/
-//这里还不完整
-var cerateElement = function(Vnode,parentElm){
+
+//创建组件
+var cerateElement = function(Vnode){
 	var tagName, children;
-	var refElm;
 
 	if(Vnode.VnodeType === 1 && !Vnode.empty){
 		tagName = Vnode.tagName;
 		children = Vnode.children;
 
-		var refElm = nodeOp.createElement(tagName);
-		Vnode.elm = refElm;
+		Vnode.elm = nodeOp.createElement(tagName);
 		//处理指令
 		processDirective(Vnode, Vnode.directives);
 		//设置属性
@@ -22,18 +21,22 @@ var cerateElement = function(Vnode,parentElm){
 		//设置事件
 		setEventListener(Vnode.elm, Vnode.events);
 
-		//更新生成子元素
+		//递归更新生成子元素
 		if(Array.isArray(children) && children.length > 0){
 			for(var i = 0; i<children.length; i++){
-				cerateElement(children[i],Vnode.elm);
+				cerateElementBindAddParent(children[i],Vnode.elm);
 			}	
 		}
 	}else if(Vnode.VnodeType === 2 && !Vnode.empty){
-		refElm = nodeOp.createTextNode(Vnode.text);
-		Vnode.elm = refElm;
+		Vnode.elm = nodeOp.createTextNode(Vnode.text);
 	}
+	return Vnode;
+}
 
-	nodeOp.appendChild(parentElm,refElm);
+//创建组件并且添加到父节点中
+var cerateElementBindAddParent = function(Vnode,parentElm){
+	var Vnode = cerateElement(Vnode);
+	nodeOp.appendChild(parentElm,Vnode.elm);
 }
 
 
@@ -77,14 +80,19 @@ var processDirective = function(Vnode,directives){
 
 
 
+
 /**************************    删除部分         *****************************/
+
 //这里还不完整
 var removeElement = function(Vnode){
 	if(Vnode.empty){
 		var parent = nodeOp.getParent(Vnode.elm);
 		nodeOp.removeChild(parent,Vnode.elm)
 	}else{
-		//这里要卸载相应事件
+		//这里还要卸载相应事件等等
+		//还不完整
+		var parent = nodeOp.getParent(Vnode.elm);
+		nodeOp.removeChild(parent,Vnode.elm)
 	}
 }
 
@@ -101,20 +109,21 @@ var updateElement = function(oldNode,Vnode){
 	//如果新节点存在,老节点不存在
 	if(!oldNode && Vnode){
 		var parentElm = Vnode.parent.elm;
-		cerateElement(Vnode,parentElm)
+		cerateElementBindAddParent(Vnode,parentElm)
 		return false;
 	}
-
+	//如果节点类型出现不匹配
 	if(Vnode.VnodeType === 1){
+		//更新类行组件
 		Vnode.elm = oldNode.elm;
 		updateDirective(oldNode,Vnode);
 		updateAttrs(oldNode,Vnode);
 		updateChildren(oldNode.children, Vnode.children);
 	}else if(Vnode.VnodeType === 2){
+		//替换组件
 		Vnode.elm = oldNode.elm;
 		updateText(oldNode,Vnode)
 	}
-	
 }
 
 
@@ -193,39 +202,37 @@ var updateAttrs = function(oldNode,Vnode){
 }
 
 
-//更新子节点
-//这里存在问题 同一级节点 老节点删除一个  位置出现错误变化
-//需要修改
-var updateChildren = function(oldChildren,children){
-	//子节点递归更新
-	for(var i=0 ;i<children.length ;i++){
-		var Vnode = children[i];
-		var oldVnode;
-		console.log(Vnode, oldChildren[i] ,111111111);
-
-		if(oldChildren[i]){
-			oldVnode = oldChildren[i]
-			oldChildren.splice(i,1);
-		}else{
-			oldVnode = false;
-		}
-		
-		updateElement(oldVnode,Vnode);
-	}
-	console.log(oldChildren,111)
-	//删除余下的老节点
-	for(var i=0; i<oldChildren.length ;i++){
-		updateElement(oldChildren[i],false);
-	}
-}
-
-
 //更新文本内容
 var updateText = function(oldNode,Vnode){
 	if(oldNode.text !== Vnode.text){
 		nodeOp.setText(Vnode.elm,Vnode.text);
 	}
 }
+
+
+//更新子节点
+var updateChildren = function(oldChildren,children){
+	//子节点递归更新
+	var len = children.length;
+	for(var i=0 ;i<len ;i++){
+		var Vnode = children[i];
+		var oldVnode;
+
+		if(oldChildren[i]){
+			oldVnode = oldChildren[i]
+		}else{
+			oldVnode = false;
+		}
+		updateElement(oldVnode,Vnode);
+	}
+
+	//删除余下的老节点
+	for(var i=len; i<oldChildren.length ;i++){
+		updateElement(oldChildren[i],false);
+	}
+}
+
+
 
 
 
@@ -237,15 +244,12 @@ export var patch = function(oldNode,Vnode,isRoot){
 	//是否是根节点 并且老节点是空节点
 	if(isRoot && oldNode.empty){
 		//创建新元素 更新到DOM
-		cerateElement(Vnode,Vnode.parent);
+		cerateElementBindAddParent(Vnode,Vnode.parent);
 		//删除老节点 从DOM中删除对应真实节点
 		removeElement(oldNode)
 	}else if(oldNode && Vnode ){
 		//不是的话 那么更新对比节点
-		// console.log('更新节点')
-		console.log(oldNode,Vnode)
 		updateElement(oldNode,Vnode)
-		return false;
 	}
 	return Vnode;
 }
