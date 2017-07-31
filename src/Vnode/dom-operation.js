@@ -17,6 +17,12 @@ export var createTextNode = function(text){
 	return document.createTextNode(text);
 }
 
+
+//替换节点
+export var repalceNode = function(el,newNode,oldNode){
+	el.replaceChild(newNode,oldNode)
+}
+
 //设置节点文本内容
 export var setText = function(el,text){
 	return el.textContent = text;

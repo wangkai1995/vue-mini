@@ -114,14 +114,19 @@ var updateElement = function(oldNode,Vnode){
 		return false;
 	}
 	//如果节点类型出现不匹配
+	if(Vnode.VnodeType !== oldNode.VnodeType ){
+		//新老节点出现类型变化 则重新生产并且替换
+		Vnode = cerateElement(Vnode);
+		nodeOp.repalceNode(Vnode.parent.elm,Vnode.elm,oldNode.elm)
+		return false;
+	}
+	//更新组件
 	if(Vnode.VnodeType === 1){
-		//更新类行组件
 		Vnode.elm = oldNode.elm;
 		updateDirective(oldNode,Vnode);
 		updateAttrs(oldNode,Vnode);
 		updateChildren(oldNode.children, Vnode.children);
 	}else if(Vnode.VnodeType === 2){
-		//替换组件
 		Vnode.elm = oldNode.elm;
 		updateText(oldNode,Vnode)
 	}
@@ -255,6 +260,7 @@ export var patch = function(oldNode,Vnode,isRoot){
 		removeElement(oldNode)
 	}else if(oldNode && Vnode ){
 		//不是的话 那么更新对比节点
+		// console.log(oldNode,Vnode)
 		updateElement(oldNode,Vnode)
 	}
 	return Vnode;

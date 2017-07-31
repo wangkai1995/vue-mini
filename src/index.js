@@ -9,14 +9,14 @@ window.onload = function(){
         var family = [
                 {relation:'父亲',name:'老王'},{relation:'母亲1',name:'乱写的'},
                 {relation:'母亲2',name:'乱写的'},{relation:'母亲3',name:'乱写的'},
-                {relation:'母亲4',name:'乱写的'},{relation:'母亲4',name:'乱写的'},
+                {relation:'母亲4',name:'乱写的'},{relation:'母亲5',name:'乱写的'},
             ]
         var test = new VueMini({
             el:'#test',
             data: {
                 name:'阿迪王',
                 age:17,
-                testShow:true,
+                testShow:false,
                 time: new Date().toLocaleString(),
                 family:family,
             },
@@ -27,7 +27,7 @@ window.onload = function(){
                 }
             }
         })
-
+        
         var time = setInterval(function(){
             test.age += 1;
             test.testShow = !test.testShow ;
