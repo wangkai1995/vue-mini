@@ -7,6 +7,17 @@ export var isObject = function(obj){
 
 
 
+export var isEmpty = function(obj){
+    if( !obj || !isObject(obj) ){
+        return true;
+    }
+    for(var key in obj){
+        return false;
+    }
+    return true;
+}
+
+
 
 
 

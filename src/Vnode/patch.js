@@ -1,5 +1,6 @@
 
 import * as nodeOp from './dom-operation';
+import {isEmpty} from '../share/judge/util';
 
 
 
@@ -131,7 +132,7 @@ var updateElement = function(oldNode,Vnode){
 var updateDirective = function(oldNode,Vnode){
 	var oldDirective = oldNode.directives;
 	var nowDirective = Vnode.directives;
-	if(oldDirective.length ===0 && nowDirective.length ===0 ){
+	if(!nowDirective  || nowDirective.length ===0 ){
 		return false;
 	}
 	//遍历新指令依次做对比更新
@@ -159,6 +160,9 @@ var updateDirective = function(oldNode,Vnode){
 
 	//获取旧指令集合中指令名对应的指令
 	function getOldDirectiveValue(directiveName){
+		if(!oldDirective || oldDirective.length === 0 ){
+			return false;
+		}
 		for(var i=0; i<oldDirective.length ;i++){
 			if(oldDirective[i].name === directiveName ){
 				return oldDirective[i];
@@ -177,7 +181,7 @@ var updateAttrs = function(oldNode,Vnode){
 	if(!oldAttrs && !nowAttrs ){
 		return false;
 	}
-	var nowKeys = (nowAttrs && nowAttrs.length >0)? Object.keys(nowAttrs): [];
+	var nowKeys = (nowAttrs && isEmpty(nowAttrs) )? Object.keys(nowAttrs): [];
 	//遍历新属性集合更新对应节点属性
 	for(var i=0; i<nowKeys.length ; i++){
 		var key = nowKeys[i]
@@ -193,7 +197,7 @@ var updateAttrs = function(oldNode,Vnode){
 		}
 	}
 	//遍历旧属性集合 这里剩下的都是需要删除的
-	var oldKeys = (oldAttrs && oldAttrs.length >0) ? Object.keys(oldAttrs): [];
+	var oldKeys = (oldAttrs && isEmpty(oldAttrs)) ? Object.keys(oldAttrs): [];
 	for(var i=0; i<oldKeys.length ; i++){
 		var key = oldKeys[i];
 		delete oldAttrs[key];
@@ -218,7 +222,7 @@ var updateChildren = function(oldChildren,children){
 		var Vnode = children[i];
 		var oldVnode;
 
-		if(oldChildren[i]){
+		if(oldChildren && oldChildren[i]){
 			oldVnode = oldChildren[i]
 		}else{
 			oldVnode = false;
@@ -226,9 +230,11 @@ var updateChildren = function(oldChildren,children){
 		updateElement(oldVnode,Vnode);
 	}
 
-	//删除余下的老节点
-	for(var i=len; i<oldChildren.length ;i++){
-		updateElement(oldChildren[i],false);
+	if(oldChildren){
+		//删除余下的老节点
+		for(var i=len; i<oldChildren.length ;i++){
+			updateElement(oldChildren[i],false);
+		}
 	}
 }
 

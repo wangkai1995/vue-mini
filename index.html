@@ -1,6 +1,9 @@
 
 
 <!DOCTYPE html>
+
+
+
 <html>
 	<head>
 		<meta charset="UTF-8"/>
@@ -9,21 +12,31 @@
 		<meta name="renderer" content="webkit">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<title>vue-mini</title>
+		<style>
+			.item{
+				padding:5px;
+				color:#f30;
+			}
+		</style>
 	</head>
 	<body>
+
 		<div id="test">
 			<h5 vm-onClick="testClick">点我获取当前时间:{{time}}</h5>
 			他的名字: {{name}}<br>
 			今年的年龄是{{age}}
 			<p><input type="text" vm-model="name" /></p>
-			<p>是个男孩</p>
-			<div vm-for="item in family">
+			<p vm-if="testShow">是个男孩</p>
+			<div vm-for="item in family" class="item">
 				家人名字是:{{item.name}},关系是{{item.relation}} 
 			</div>
 		</div>
+
 	</body>
 	<script src="/static/app.js" type="text/javascript" charset="utf-8"></script>
 </html>
+
+
 
 
 

@@ -31,6 +31,8 @@ export  var parse = function(template ,options){
 				// isFor: false,
 				// forkey: null,     vm-for专属数据
 				// forSource: null
+				// isIf: false,      vm-if标记
+				// ifExp: null       vm-if表达式
 				attrs:[],
 				event:[],
 				directive:[],

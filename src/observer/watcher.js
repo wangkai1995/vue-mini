@@ -37,26 +37,33 @@ Watcher.prototype.update = function(){
 
 Watcher.prototype.render = function(isRoot){
 	var el = queryNode(this._vue._el);
+	var Vnode;
+	var oldVnode;
 	if(!el){
 		warnError('mount error: is new VueMini params el is no query dom');
 		return false;
 	}
-
-	setDepTarget(this);
+	//生成
 	try{
-		var Vnode = this._render.call(this._vue);
+		setDepTarget(this);
+		Vnode = this._render.call(this._vue);
 		clearDepTarget();
+	}catch(e){
+		warnError('mount error: is VueMini render error, detail message a '+e);
+		clearDepTarget();
+	}
+	//挂载
+	try{
 		if(this.Vnode){
-			var oldVnode = this.Vnode;
+			oldVnode = this.Vnode;
 		}else{
-			var oldVnode = createEmptyVnode();
+			oldVnode = createEmptyVnode();
 			oldVnode.elm = el;
 		}
 		//将虚拟节点 更新到真实dom上
 		this.Vnode = patch( oldVnode, Vnode, isRoot /*isRoot*/ );
 	}catch(e){
-		warnError('mount error: is VueMini render error, detail message a '+e);
-		clearDepTarget();
+		warnError('mount error: is VueMini patch error, detail message a '+e);
 	}
 }
 

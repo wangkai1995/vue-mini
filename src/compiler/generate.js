@@ -26,6 +26,28 @@ function generateForCode(node){
 
 
 
+//vm-if directive特殊生成
+function generateIFCode(node){
+    var tag = node.tagName;
+    var type = node.type
+    var ifExp  = node.ifExp;
+    switch(type){
+        case 1:
+            var attrs = genreateAttr(node.attrs);
+            var children = generateChildren(node.children)
+            var EventCode = generateEvent(node.event);
+            var directiveCode = generateDirective(node.directive);
+            return '('+ifExp+')? _c("'+tag+'",'+attrs+','+children+','+EventCode+','+directiveCode+'): _v("")'
+        case 2:
+            return '('+ifExp+')? _v(_s('+node.exp+')) : _v("")'
+        case 3:
+            return '('+ifExp+')? _v("'+node.text+'") : _v("")'
+    }
+    return '_v("")'
+}
+
+
+
 //生成子节点Code函数
 function generateChildren(children){
     if(!Array.isArray(children)|| children.length ===0 ){
@@ -37,6 +59,11 @@ function generateChildren(children){
         //如果是vm-for命令特殊处理
         if(node.isFor){
             CodeList.push(generateForCode(node))
+            continue;
+        }
+        //如果是vm-if命令特殊处理
+        if(node.isIf){
+            CodeList.push(generateIFCode(node))
             continue;
         }
         //普通子节点处理

@@ -41,6 +41,8 @@ export function parseAttrs(astElm ,attrs){
         //处理事件
         processEvent(elm,key,attrsMap)
     }
+    //特殊处理vm-if
+    processIf(elm)
     //特殊处理vm-for
     processFor(elm)
     //处理剩余的attr
@@ -62,6 +64,26 @@ function processDirective(elm,attrKey,attrMap){
 }
 
 
+
+//处理vm-if指令
+function processIf(elm){
+    if(!Array.isArray(elm.directive) || elm.directive.length === 0){
+        return false;
+    }
+    var directive;
+    for(var i=0 ; i<elm.directive.length ;i++){
+        if(elm.directive[i].name === 'if'){
+            directive = elm.directive[i];
+            break;
+        }
+    }
+    if(!directive){
+        return false;
+    }
+    elm.isIf = true;
+    elm.ifExp = directive.exp;
+    elm.directive.splice(i,1);
+}
 
 
 //处理vm-for指令
