@@ -1,6 +1,6 @@
 
 import * as nodeOp from './dom-operation';
-import {isEmpty} from '../share/judge/util';
+import { isEmpty } from '../share/judge/util';
 
 
 
@@ -34,6 +34,7 @@ var cerateElement = function(Vnode){
 	return Vnode;
 }
 
+
 //创建组件并且添加到父节点中
 var cerateElementBindAddParent = function(Vnode,parentElm){
 	var Vnode = cerateElement(Vnode);
@@ -58,6 +59,7 @@ var setEventListener = function(refElm,events){
 	}
 }
 
+
 //设置相应指令
 //对应的删除还没做
 var processDirective = function(Vnode,directives){
@@ -73,9 +75,27 @@ var processDirective = function(Vnode,directives){
 			}
 			Vnode.attrs['value'] = directive.value;
 			Vnode.elm.addEventListener('input',directive.event);
+			continue;
 		}
-		//下面几个属性还未处理
-		// for if show 还未处理
+		//class特殊处理
+		if(directive.name === 'class' && !isEmpty(directive.exp) ){
+			var attrs = Vnode.attrs
+			var classList = '';
+			//属性中是否存在class
+			if( !isEmpty(attrs) ){
+				classList = attrs['class'] != null? attrs['class'] : '';
+			}
+			//遍历class exp
+			for(var className in directive.exp){
+				if( directive.exp[className] ){
+					classList += ' '+className;
+				}
+			}
+			if(classList.length > 0){
+				Vnode.attrs['class'] = classList;
+			}
+			continue;
+		}
 	}
 }
 
@@ -133,6 +153,7 @@ var updateElement = function(oldNode,Vnode){
 }
 
 
+
 //更新指令
 var updateDirective = function(oldNode,Vnode){
 	var oldDirective = oldNode.directives;
@@ -159,7 +180,24 @@ var updateDirective = function(oldNode,Vnode){
 						Vnode.attrs['value'] = now.value;
 					}
 				break;
-			// for if show 还未处理
+			case 'class':
+					//这里可能存在性能损耗
+					var attrs = Vnode.attrs
+					var classList = '';
+					//属性中是否存在class
+					if( !isEmpty(attrs) ){
+						classList = attrs['class'] != null? attrs['class'] : '';
+					}
+					//遍历class exp
+					for(var className in now.exp){
+						if( now.exp[className] ){
+							classList += ' '+className;
+						}
+					}
+					if(classList.length > 0){
+						Vnode.attrs['class'] = classList;
+					}
+				break;
 		}
 	}
 
@@ -178,6 +216,7 @@ var updateDirective = function(oldNode,Vnode){
 }
 
 
+
 //更新属性
 var updateAttrs = function(oldNode,Vnode){
 	var refElm = Vnode.elm;
@@ -186,7 +225,7 @@ var updateAttrs = function(oldNode,Vnode){
 	if(!oldAttrs && !nowAttrs ){
 		return false;
 	}
-	var nowKeys = (nowAttrs && isEmpty(nowAttrs) )? Object.keys(nowAttrs): [];
+	var nowKeys = (nowAttrs && !isEmpty(nowAttrs) )? Object.keys(nowAttrs): [];
 	//遍历新属性集合更新对应节点属性
 	for(var i=0; i<nowKeys.length ; i++){
 		var key = nowKeys[i]

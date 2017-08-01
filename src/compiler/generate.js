@@ -126,6 +126,10 @@ function generateDirective(directives){
             directiveCode.push('{name:"'+direc.name+'",exp:function(val){ '+direc.exp+' = val },value:'+direc.exp+'}')
             continue;
         }
+        if(direc.name === 'class'){
+            directiveCode.push('{name:"'+direc.name+'",exp:'+direc.exp+'}')
+            continue;
+        }
     }
 
     return '['+directiveCode.join(',')+']'

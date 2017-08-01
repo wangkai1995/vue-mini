@@ -1,7 +1,9 @@
 
 
 
+
 import VueMini from './instance/index';
+
 
 
 
@@ -27,18 +29,20 @@ window.onload = function(){
                 }
             }
         })
-        
+
+
         var time = setInterval(function(){
             test.age += 1;
             test.testShow = !test.testShow ;
             if( test.age< 20){
-                test.family.splice(4,0,{relation:'阿里巴巴',name:'四十大盗'});   
+                test.family.splice(4,0,{relation:'阿里巴巴',name:'四十大盗'});  
             }
             if(test.age > 20 && test.age < 22){
                 test.family.splice(2,0,{relation:'走四方',name:'我来也'}); 
             }
         },1000)
 }
+
 
 
 

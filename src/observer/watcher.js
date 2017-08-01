@@ -63,7 +63,7 @@ Watcher.prototype.render = function(isRoot){
 		//将虚拟节点 更新到真实dom上
 		this.Vnode = patch( oldVnode, Vnode, isRoot /*isRoot*/ );
 	}catch(e){
-		warnError('mount error: is VueMini patch error, detail message a '+e);
+		warnError('mount error: is VueMini mount error, detail message a '+e);
 	}
 }
 

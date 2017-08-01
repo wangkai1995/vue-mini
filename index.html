@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 
 
-
 <html>
 	<head>
 		<meta charset="UTF-8"/>
@@ -15,6 +14,13 @@
 		<style>
 			.item{
 				padding:5px;
+			}
+			.test{
+				font-size: 20px;
+				margin-top: 20px;
+				display: inline-block;
+			}
+			.active{
 				color:#f30;
 			}
 		</style>
@@ -22,12 +28,27 @@
 	<body>
 
 		<div id="test">
-			<h5 vm-onClick="testClick">点我获取当前时间:{{time}}</h5>
+			<h5     
+				style="color:#f50;font-size:16px;" 
+				vm-onClick="testClick"
+			>
+				点我获取当前时间:{{time}}
+			</h5>
 			他的名字: {{name}}<br>
-			今年的年龄是{{age}}
-			<p><input type="text" vm-model="name" /></p>
-			<p vm-if="testShow">是个男孩</p>
-			<div vm-for="item in family" class="item">
+			<span 
+				class="test" 
+				vm-class="{'active':testShow}"
+			>
+				今年的年龄是{{age}}
+			</span>
+			<p>
+				<input type="text" vm-model="name" />
+			</p>
+			<p  vm-if="testShow">是个男孩</p>
+			<div 
+				vm-for="item in family" 
+				class="item"
+			>
 				家人名字是:{{item.name}},关系是{{item.relation}} 
 			</div>
 		</div>
