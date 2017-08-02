@@ -13,6 +13,7 @@ window.onload = function(){
                 {relation:'母亲2',name:'乱写的'},{relation:'母亲3',name:'乱写的'},
                 {relation:'母亲4',name:'乱写的'},{relation:'母亲5',name:'乱写的'},
             ]
+            
         var test = new VueMini({
             el:'#test',
             data: {
@@ -41,7 +42,9 @@ window.onload = function(){
                 test.family.splice(2,0,{relation:'走四方',name:'我来也'}); 
             }
         },1000)
+
 }
+
 
 
 

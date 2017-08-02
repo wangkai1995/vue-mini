@@ -130,6 +130,10 @@ function generateDirective(directives){
             directiveCode.push('{name:"'+direc.name+'",exp:'+direc.exp+'}')
             continue;
         }
+        if(direc.name === 'show'){
+            directiveCode.push('{name:"'+direc.name+'",exp:'+direc.exp+'}')
+            continue;
+        }
     }
 
     return '['+directiveCode.join(',')+']'

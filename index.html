@@ -34,6 +34,12 @@
 			>
 				点我获取当前时间:{{time}}
 			</h5>
+			<p 
+				style="color:#f50;font-size:16px" 
+				vm-show="false"
+			>
+				用来测试vm-show的
+			</p>
 			他的名字: {{name}}<br>
 			<span 
 				class="test" 
@@ -49,13 +55,16 @@
 				vm-for="item in family" 
 				class="item"
 			>
-				家人名字是:{{item.name}},关系是{{item.relation}} 
+				家人名字是:{{item.name}},<span>关系是{{item.relation}} </span>
 			</div>
 		</div>
 
 	</body>
 	<script src="/static/app.js" type="text/javascript" charset="utf-8"></script>
 </html>
+
+
+
 
 
 

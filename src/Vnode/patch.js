@@ -3,6 +3,11 @@ import * as nodeOp from './dom-operation';
 import { isEmpty } from '../share/judge/util';
 
 
+// style="xxxx=xxx(;)"判断正则
+var styleSeparatorReg = /(;)+\s*$/;
+
+
+
 
 /**************************    创建部分         *****************************/
 
@@ -70,35 +75,64 @@ var processDirective = function(Vnode,directives){
 		var directive = directives[i];
 		//model特殊处理
 		if(directive.name === 'model' && !directive.event ){
-			directive.event = function(el){
-				directive.exp(el.target.value);
-			}
-			Vnode.attrs['value'] = directive.value;
-			Vnode.elm.addEventListener('input',directive.event);
+			processModelDirective(Vnode,directive)
 			continue;
 		}
 		//class特殊处理
 		if(directive.name === 'class' && !isEmpty(directive.exp) ){
-			var attrs = Vnode.attrs
-			var classList = '';
-			//属性中是否存在class
-			if( !isEmpty(attrs) ){
-				classList = attrs['class'] != null? attrs['class'] : '';
-			}
-			//遍历class exp
-			for(var className in directive.exp){
-				if( directive.exp[className] ){
-					classList += ' '+className;
-				}
-			}
-			if(classList.length > 0){
-				Vnode.attrs['class'] = classList;
-			}
+			processClassDirective(Vnode,directive)
+			continue;
+		}
+		//show特殊处理
+		if(directive.name === 'show'){
+			processShowDirective(Vnode,directive)
 			continue;
 		}
 	}
 }
 
+
+//处理model指令
+var processModelDirective = function(Vnode,directive){
+	directive.event = function(el){
+		directive.exp(el.target.value);
+	}
+	Vnode.attrs['value'] = directive.value;
+	Vnode.elm.addEventListener('input',directive.event);
+}
+
+
+//处理class指令
+var processClassDirective = function(Vnode,directive){
+	var attrs = Vnode.attrs
+	var classList = '';
+	//属性中是否存在class
+	if( !isEmpty(attrs) ){
+		classList = attrs['class'] != null? attrs['class'] : '';
+	}
+	//遍历class exp
+	for(var className in directive.exp){
+		if( directive.exp[className] ){
+			classList += ' '+className;
+		}
+	}
+	if(classList.length > 0){
+		Vnode.attrs['class'] = classList;
+	}
+}
+
+
+//处理show指令
+var processShowDirective = function(Vnode,directive){
+	var style = Vnode.attrs['style'];
+	if(style && style.length >0){
+		var display= directive.exp? 'display:show;':'display:none;';
+			style += styleSeparatorReg.test(style)? display : ';'+display ;
+	}else{
+		style = directive.exp? 'display:show;':'display:none;'
+	}
+	Vnode.attrs['style'] = style;
+}
 
 
 
@@ -169,12 +203,7 @@ var updateDirective = function(oldNode,Vnode){
 		switch(now.name){
 			case 'model':
 					if(!old){
-						//重新设置model绑定
-						now.event = function(el){
-							now.exp(el.target.value);
-						}
-						Vnode.attrs['value'] = now.value;
-						Vnode.elm.addEventListener('input',now.event);
+						processModelDirective(Vnode,now);
 					}else if(old.value !== now.value){
 						//更新值
 						Vnode.attrs['value'] = now.value;
@@ -182,21 +211,11 @@ var updateDirective = function(oldNode,Vnode){
 				break;
 			case 'class':
 					//这里可能存在性能损耗
-					var attrs = Vnode.attrs
-					var classList = '';
-					//属性中是否存在class
-					if( !isEmpty(attrs) ){
-						classList = attrs['class'] != null? attrs['class'] : '';
-					}
-					//遍历class exp
-					for(var className in now.exp){
-						if( now.exp[className] ){
-							classList += ' '+className;
-						}
-					}
-					if(classList.length > 0){
-						Vnode.attrs['class'] = classList;
-					}
+					processClassDirective(Vnode,now)
+				break;
+			case 'show':
+					//这里可能存在性能损耗
+					processShowDirective(Vnode,now)
 				break;
 		}
 	}
@@ -250,12 +269,14 @@ var updateAttrs = function(oldNode,Vnode){
 }
 
 
+
 //更新文本内容
 var updateText = function(oldNode,Vnode){
 	if(oldNode.text !== Vnode.text){
 		nodeOp.setText(Vnode.elm,Vnode.text);
 	}
 }
+
 
 
 //更新子节点
@@ -304,6 +325,7 @@ export var patch = function(oldNode,Vnode,isRoot){
 	}
 	return Vnode;
 }
+
 
 
 
