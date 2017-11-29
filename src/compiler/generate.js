@@ -93,7 +93,6 @@ function generateChildren(children){
 
 
 
-
 //生成事件Code函数
 function generateEvent(events){
     if( !Array.isArray(events)|| events.length ===0 ){
@@ -104,12 +103,15 @@ function generateEvent(events){
     
     for(var i=0; i<events.length ;i++){
         var eve = events[i];
-        EventCodeList.push('{name:"'+eve.name+'",exp:_method["'+eve.exp+'"]}')
+        if(eve.params){
+            EventCodeList.push('{name:"'+eve.name+'",exp:_method["'+eve.exp+'"],params:['+eve.params+']}') 
+        }else{
+            EventCodeList.push('{name:"'+eve.name+'",exp:_method["'+eve.exp+'"]}') 
+        }
     }
 
     return '['+EventCodeList.join(',')+']'
 }
-
 
 
 
@@ -138,8 +140,6 @@ function generateDirective(directives){
 
     return '['+directiveCode.join(',')+']'
 }
-
-
 
 
 

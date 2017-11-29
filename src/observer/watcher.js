@@ -2,9 +2,9 @@
 
 import { warnError } from '../share/utiliy/error';
 import { setDepTarget ,clearDepTarget } from './dep';
-import {  createEmptyVnode } from '../vnode/index';
-import { patch } from '../vnode/patch';
-import { queryNode } from '../vnode/dom-operation';
+import {  createEmptyVnode } from '../Vnode/index';
+import { patch } from '../Vnode/patch';
+import { queryNode } from '../Vnode/dom-operation';
 
 
 const Watcher = function(vue,render){
@@ -46,6 +46,7 @@ Watcher.prototype.render = function(isRoot){
 	//生成
 	try{
 		setDepTarget(this);
+		// var start  = new Date().getTime();
 		Vnode = this._render.call(this._vue);
 		clearDepTarget();
 	}catch(e){
@@ -62,6 +63,8 @@ Watcher.prototype.render = function(isRoot){
 		}
 		//将虚拟节点 更新到真实dom上
 		this.Vnode = patch( oldVnode, Vnode, isRoot /*isRoot*/ );
+		// var end = new Date().getTime();
+		// console.log( end-start )
 	}catch(e){
 		warnError('mount error: is VueMini mount error, detail message a '+e);
 	}

@@ -1,9 +1,13 @@
 
 import { warnError } from '../../share/utiliy/error';
 
-
+//捕获事件
 var eventReg = /vm-on([a-zA-Z]+)/;
+//捕获事件是否穿参数
+var eventParamsReg = /([a-zA-Z,"']+)\(([a-zA-Z,"']+)\)/
+//捕获指令
 var directiveReg = /vm-([a-z]+)/;
+//捕获vnm-for内容
 var forReg = /^\s*([\w]+)\s*in\s*([\w]+)/;
 
 
@@ -126,6 +130,18 @@ function processEvent(elm,attrKey,attrMap){
     var event = {}
     event.name = attrKey.match(eventReg)[1].toLowerCase();
     event.exp = getAttributeMap(attrMap,attrKey);
+    
+    //如果存在包裹参数
+    if(eventParamsReg.test(event.exp)){
+        var exp = event.exp.match(eventParamsReg)[1]
+        var params = event.exp.match(eventParamsReg)[2];
+        //判断是否传入多个参数
+        if(params.indexOf(',') > -1){
+            params = params.split(',')
+        }
+        event.params = params;
+        event.exp = exp;
+    }
     elm.event.push(event);
 }
 

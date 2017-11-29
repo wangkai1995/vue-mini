@@ -9,7 +9,7 @@ import {
 	createVNodeElement,
 	createVNodeText,
 	createListVNode,
-} from '../VNode/index';
+} from '../Vnode/index';
 
 
 var uid = 0;

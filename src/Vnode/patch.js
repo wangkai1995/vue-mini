@@ -60,7 +60,23 @@ var setEventListener = function(refElm,events){
 		return false;
 	}
 	for(var i=0 ;i< events.length ; i++){
-		refElm.addEventListener(events[i].name,events[i].exp);
+		(function(count){
+			//这个标志用来解决闭包呢concat el问题
+			var flag = true;
+			events[count].instance = function(el){
+				if(!events[count].params){
+					events[count].params = [];
+				}
+				//组装参数
+				if(flag){
+					events[count].params = events[count].params.concat([el])
+					flag = false;
+				}
+				//执行
+				events[count].exp.apply(this,events[count].params)
+			}
+		})(i)
+		refElm.addEventListener(events[i].name,events[i].instance);
 	}
 }
 
