@@ -13,6 +13,9 @@ export var defineDataToObserver = function(data){
     for(var i=0;i<keys.length ;i++){
         var key = keys[i]
         if( isObject(data[key]) || Array.isArray(data[key]) ){
+            //绑定这个数组或者对象
+            defineObserver(data,key,data[key]);
+            //递归绑定其中子元素
             defineDataToObserver(data[key])
         }else{
             defineObserver(data,key,data[key])

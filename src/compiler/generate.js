@@ -1,4 +1,4 @@
-
+import { parseText } from './parse/text-parse';
 
 
 //编译生成可执行code
@@ -145,14 +145,27 @@ function generateDirective(directives){
 
 //生成attributeCode函数
 function genreateAttr(attrs){
-    var attrsCode = {};
+    var expReg = /\{\{((?:.|\n)+?)\}\}/;
+    var attrsCode = '{';
     if(!Array.isArray(attrs) || attrs.length === 0){
         return '{}';
     }
     for(var i=0 ;i<attrs.length ;i++){
-        attrsCode[attrs[i].name] = attrs[i].value;
+        //判断表达式中间是否有解析式
+        var exp = parseText(attrs[i].value)
+        if(!exp){
+            attrsCode += '"'+attrs[i].name+'":'
+            attrsCode += '"'+attrs[i].value+'"'
+        }else{
+            attrsCode += '"'+attrs[i].name+'":'
+            attrsCode += exp;
+        }
+        if((i+1)<attrs.length){
+            attrsCode +=','
+        }
     }
-    return JSON.stringify(attrsCode);
+    attrsCode +='}'
+    return attrsCode
 }
 
 

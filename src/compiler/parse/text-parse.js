@@ -28,6 +28,15 @@ export var parseText = function(text){
             tokenExp.push('"'+text.slice(0,nextIndex)+'"')
             text = text.substring(nextIndex);
         }
+        //表达式之后还有字符
+        if(lastIndex !== 0){
+            //如果后面还有表达式
+            if(expReg.test(text)){
+                 continue
+            }else{
+               tokenExp.push('"'+text.slice(0,lastIndex)+'"') 
+            }
+        }
     }
     if(lastIndex<text.length){
         tokenExp.push('"'+text.slice(lastIndex,text.length)+'"')

@@ -89,6 +89,7 @@ var processDirective = function(Vnode,directives){
 	}
 	for(var i=0 ;i<directives.length ;i++){
 		var directive = directives[i];
+
 		//model特殊处理
 		if(directive.name === 'model' && !directive.event ){
 			processModelDirective(Vnode,directive)
@@ -122,6 +123,7 @@ var processModelDirective = function(Vnode,directive){
 var processClassDirective = function(Vnode,directive){
 	var attrs = Vnode.attrs
 	var classList = '';
+
 	//属性中是否存在class
 	if( !isEmpty(attrs) ){
 		classList = attrs['class'] != null? attrs['class'] : '';

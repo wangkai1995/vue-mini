@@ -33,7 +33,6 @@ export var createVNodeElement = function(tag,attrs,children,events,directives,is
     // el.beforeNode = null;
     // el.nextNode = null
 
-
     //根组件这里做下特殊处理 给子组件遍历一次 绑定父组件关系
     //这里可能存在性能损耗
     if(isRoot){

@@ -8,7 +8,7 @@ export var isObject = function(obj){
 
 
 export var isEmpty = function(obj){
-    if( !obj || !isObject(obj) ){
+    if( !obj ){
         return true;
     }
     for(var key in obj){
