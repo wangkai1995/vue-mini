@@ -30,6 +30,14 @@ export var toStringify = function(text){
 }
 
 
+//方法中绑定当前作用域
+export var bind = function(event){
+    var self = this;
+    return function(){
+        event.apply(self,arguments)
+    }
+}
+
 
 
 

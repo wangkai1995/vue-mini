@@ -9,7 +9,7 @@ export var generateCode = function(AST){
     var EventCode = generateEvent(AST.event);
     var directiveCode = generateDirective(AST.directive);
 
-    return 'with(this){return _c("'+tag+'",'+attrs+','+children+','+EventCode+','+directiveCode+',true)}'
+    return 'with(this){return _c("'+tag+'",'+attrs+','+children+','+EventCode+','+directiveCode+',_rootParent)}'
 }
 
 
@@ -21,7 +21,7 @@ function generateForCode(node){
     var children = generateChildren(node.children)
     var EventCode = generateEvent(node.event);
     var directiveCode = generateDirective(node.directive);
-    return '_l('+node.forSource+',function('+node.forkey+'){ return _c("'+tag+'",'+attrs+','+children+','+EventCode+','+directiveCode+') })'
+    return '_l('+node.forSource+',function('+node.forkey+',$index){ return _c("'+tag+'",'+attrs+','+children+','+EventCode+','+directiveCode+') })'
 }
 
 
@@ -104,9 +104,9 @@ function generateEvent(events){
     for(var i=0; i<events.length ;i++){
         var eve = events[i];
         if(eve.params){
-            EventCodeList.push('{name:"'+eve.name+'",exp:_method["'+eve.exp+'"],params:['+eve.params+']}') 
+            EventCodeList.push('{name:"'+eve.name+'",exp:_e(_method["'+eve.exp+'"]),params:['+eve.params+']}') 
         }else{
-            EventCodeList.push('{name:"'+eve.name+'",exp:_method["'+eve.exp+'"]}') 
+            EventCodeList.push('{name:"'+eve.name+'",exp:_e(_method["'+eve.exp+'"])}') 
         }
     }
 

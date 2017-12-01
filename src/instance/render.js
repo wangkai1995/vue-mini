@@ -37,6 +37,9 @@ export var initCompiler = function(vue){
 	var option = vue._option
 	var el = option.el;
 	el = queryDom(el);
+	if(!vue._rootParent){
+		vue._rootParent = el.parentNode
+	}
 	if(!el){
 		warnError('Compiler Error: el not is Dom NodeType or not query element')
 		return false;

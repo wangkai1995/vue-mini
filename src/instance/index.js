@@ -1,5 +1,5 @@
 
-import { toStringify ,warnError } from '../share/utiliy/index';
+import { toStringify ,warnError ,bind } from '../share/utiliy/index';
 import { initCompiler } from './render';
 import { initData } from './data';
 
@@ -23,6 +23,7 @@ const VueMini = function(option){
 	this.self = this;
 	this._el = option.el
 	this._option = option;
+	this._rootParent = option.rootParent? option.rootParent: '';
 
 	//暂时测试的
 	this._method = option.method? option.method : false ;
@@ -65,7 +66,7 @@ VueMini.prototype._s = toStringify;
 VueMini.prototype._c = createVNodeElement;
 VueMini.prototype._v = createVNodeText;
 VueMini.prototype._l = createListVNode;
-
+VueMini.prototype._e = bind
 
 
 

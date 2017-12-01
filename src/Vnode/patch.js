@@ -50,6 +50,14 @@ var cerateElementBindAddParent = function(Vnode,parentElm){
 //设置属性
 var setAttribute = function(refElm,attrs){
 	for(var key in attrs){
+		//checked 特殊处理
+		if(key === 'checked'){
+			//因为这里是转换成了字符串
+			if(JSON.parse(attrs[key])){
+				nodeOp.setAttribute( refElm, key, 'checked')
+			}
+			continue;
+		}
 		nodeOp.setAttribute( refElm, key, attrs[key] )
 	}
 }
@@ -192,6 +200,7 @@ var updateElement = function(oldNode,Vnode){
 		nodeOp.repalceNode(Vnode.parent.elm,Vnode.elm,oldNode.elm)
 		return false;
 	}
+
 	//更新组件
 	if(Vnode.VnodeType === 1){
 		Vnode.elm = oldNode.elm;
@@ -259,6 +268,9 @@ var updateAttrs = function(oldNode,Vnode){
 	var refElm = Vnode.elm;
 	var oldAttrs = oldNode.attrs;
 	var nowAttrs = Vnode.attrs;
+
+	// console.log(nowAttrs,oldAttrs)
+
 	if(!oldAttrs && !nowAttrs ){
 		return false;
 	}
@@ -268,13 +280,32 @@ var updateAttrs = function(oldNode,Vnode){
 		var key = nowKeys[i]
 		//如果老节点没有
 		if(!oldAttrs[key]){
-			nodeOp.setAttribute( refElm, key, nowAttrs[key] )
+			//checked 特殊处理
+			if(key === 'checked'){
+				//因为这里是转换成了字符串
+				if(JSON.parse(nowAttrs[key])){
+					nodeOp.setAttribute( refElm, key, 'checked')
+				}
+			}else{
+				nodeOp.setAttribute( refElm, key, nowAttrs[key] )
+			}
 			continue;
 		}
 		//如果老节点有 那么比较
 		if(oldAttrs[key] !== nowAttrs[key] ){
 			delete oldAttrs[key];
-			nodeOp.setAttribute( refElm, key, nowAttrs[key] )
+			//checked 特殊处理
+			if(key === 'checked'){
+				//因为这里是转换成了字符串
+				if(JSON.parse(nowAttrs[key])){
+					nodeOp.setAttribute( refElm, key, 'checked')
+				}else{
+					nodeOp.removeAttribute( refElm, key)
+				}
+			//checked end
+			}else{
+				nodeOp.setAttribute( refElm, key, nowAttrs[key] )
+			}
 		}
 	}
 	//遍历旧属性集合 这里剩下的都是需要删除的

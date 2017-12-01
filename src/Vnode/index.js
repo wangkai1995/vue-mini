@@ -37,7 +37,7 @@ export var createVNodeElement = function(tag,attrs,children,events,directives,is
     //这里可能存在性能损耗
     if(isRoot){
         //这里有问题 需要改
-        el.parent = document.body;
+        el.parent = isRoot;
         el.isRoot = true;
         if(Array.isArray(el.children) &&el.children.length > 0){
             childrenBindParent(el.children,el)
@@ -97,8 +97,8 @@ export var createListVNode = function(source,generatefn){
     }
     var VNode = []
     if( Array.isArray(source)   ){
-        VNode = source.map(function(item){
-            return generatefn(item);
+        VNode = source.map(function(item,index){
+            return generatefn(item,index);
         })
     }else{
         for(var key in source){
