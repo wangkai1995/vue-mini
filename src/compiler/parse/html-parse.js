@@ -26,6 +26,19 @@ var comment = /^<!--/;
 //conditional
 var conditionalComment = /^<!\[/
 
+//为了解决某些版本 编译转化的问题
+var decodingMap = {
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&amp;': '&',
+  '&#10;': '\n'
+}
+//不编译换行
+var encodedAttr = /&(?:lt|gt|quot|amp);/g
+//编译换行
+var encodedAttrWithNewLines = /&(?:lt|gt|quot|amp|#10);/g
+
 
 //火狐正则bug
 var IS_REGEX_CAPTURING_BROKEN = false;
@@ -209,9 +222,10 @@ export var parseHTML = function(html, option){
 				if(!match.attrs[i][5]){ delete match.attrs[i][5] }
 			}
 			var value = match.attrs[i][3] || match.attrs[i][4] || match.attrs[i][5] || ' '
+			var re = encodedAttr;
 			attrs.push({
 				name: match.attrs[i][1],
-				value: value,
+				value: value.replace(re, function(match){ return decodingMap[match] }),
 			})
 		}
 		if(option.start){

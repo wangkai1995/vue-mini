@@ -13,6 +13,7 @@ export  var parse = function(template ,options){
 	var stack = [];
 	var root;
 	var currentParent ;	
+
 	
 	//开始解析
 	parseHTML(template,{

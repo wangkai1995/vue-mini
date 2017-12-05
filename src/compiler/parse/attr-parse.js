@@ -11,6 +11,7 @@ var directiveReg = /vm-([a-z]+)/;
 var forReg = /^\s*([\w]+)\s*in\s*([\w]+)/;
 
 
+
 //设置attribute映射
 function setAttributeMap(attrs){
     var attribute = {};
