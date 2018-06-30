@@ -104,9 +104,9 @@ function generateEvent(events){
     for(var i=0; i<events.length ;i++){
         var eve = events[i];
         if(eve.params){
-            EventCodeList.push('{name:"'+eve.name+'",exp:_e(_method["'+eve.exp+'"]),params:['+eve.params+']}') 
+            EventCodeList.push('{name:"'+eve.name+'",exp:_e('+eve.exp+'),params:['+eve.params+']}') 
         }else{
-            EventCodeList.push('{name:"'+eve.name+'",exp:_e(_method["'+eve.exp+'"])}') 
+            EventCodeList.push('{name:"'+eve.name+'",exp:_e('+eve.exp+')}') 
         }
     }
 

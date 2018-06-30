@@ -57,4 +57,3 @@ export var defineDataToObserver = function(data){
 
 
 
-

@@ -2,6 +2,7 @@
 import { toStringify ,warnError ,bind } from '../share/utiliy/index';
 import { initCompiler } from './render';
 import { initData } from './data';
+import { initMethod } from './method';
 
 import Watcher from '../observer/watcher';
 
@@ -25,9 +26,6 @@ const VueMini = function(option){
 	this._option = option;
 	this._rootParent = option.rootParent? option.rootParent: '';
 
-	//暂时测试的
-	this._method = option.method? option.method : false ;
-
 	//执行初始化
 	this.$init();
 }
@@ -41,6 +39,8 @@ VueMini.prototype.$init = function(){
 	initCompiler(this);
 	//初始化data数据建立绑定
 	initData(this);
+	//初始化mothod方法
+	initMethod(this)
 
 	//开始挂载
 	this.$mount();

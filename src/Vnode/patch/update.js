@@ -2,6 +2,8 @@
 import * as nodeOp from '../dom-operation';
 import { isEmpty } from '../../share/judge/util';
 
+import { cerateElement, cerateElementBindAddParent } from './create.js'
+
 import { 
 	setAttribute,
 	setEventListener,
