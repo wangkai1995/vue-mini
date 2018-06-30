@@ -8,6 +8,11 @@ npm uninstall webpack --save-dev
 
 npm install webpack@2.1.0-beta.22 --save-dev
 
+"babel-core": "^6.22.1",
+"babel-loader": "^6.2.10",
+"babel-preset-es2015": "^6.22.0",
+"babel-preset-react": "^6.22.0",
+
 */
 
 var configPlugins = [];
