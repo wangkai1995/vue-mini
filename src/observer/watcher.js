@@ -31,6 +31,10 @@ Watcher.prototype.update = function(){
 	var self = this;
 	setTimeout(function(){
 		self.render.call(self,false)
+		//如果有更新回调事件,那么调用
+		if(self._vue.updated){
+			self._vue.updated();
+		}
 	},0);
 }
 
@@ -60,6 +64,13 @@ Watcher.prototype.render = function(isRoot){
 		}else{
 			oldVnode = createEmptyVnode();
 			oldVnode.elm = el;
+			//初次挂载事件
+			if(this._vue.mounted){
+				var self = this;
+				setTimeout(function(){
+					self._vue.mounted.call(self._vue)
+				});
+			}
 		}
 		//将虚拟节点 更新到真实dom上
 		this.Vnode = patch( oldVnode, Vnode, isRoot /*isRoot*/ );

@@ -4,7 +4,7 @@ import { warnError } from '../../share/utiliy/error';
 //捕获事件
 var eventReg = /vm-on([a-zA-Z]+)/;
 //捕获事件是否穿参数
-var eventParamsReg = /([a-zA-Z,"']+)\(([$a-zA-Z,"']+)\)/
+var eventParamsReg = /^([a-zA-Z,"']+)\(([$\w,"']+)\)/
 //捕获指令
 var directiveReg = /vm-([a-z]+)/;
 //捕获vnm-for内容
@@ -20,7 +20,6 @@ function setAttributeMap(attrs){
     }
     return attribute;
 }
-
 
 
 //提取attribute

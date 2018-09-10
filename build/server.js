@@ -2,7 +2,7 @@ var path = require('path');
 var express = require('express');
 var app = express();
 var webpack = require('webpack');
-var config = require('./build/webpack.config.dev');
+var config = require('../build/webpack.config.dev');
 
 var app = express();
 var compile = webpack(config);

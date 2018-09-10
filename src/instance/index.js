@@ -26,8 +26,18 @@ const VueMini = function(option){
 	this._option = option;
 	this._rootParent = option.rootParent? option.rootParent: '';
 
+	//生命周期 后面还需完善
+	if(option.updated && typeof option.updated === 'function'){
+		this.updated = option.updated
+	}
+
+	if(option.mounted && typeof option.mounted === 'function'){
+		this.mounted = option.mounted
+	}
+
 	//执行初始化
 	this.$init();
+	
 }
 
 

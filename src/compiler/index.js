@@ -15,7 +15,7 @@ export var compileTemplateToFn = function(template,options,context){
     // console.log('AST',ast)
 
     var render = generateCode(ast,options.rootEl)
-    console.log('render',render)
+    // console.log('render',render)
     
     return new Function(render) ;
 }
