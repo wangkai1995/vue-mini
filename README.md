@@ -2,7 +2,7 @@
 
  **[中文版本](https://github.com/wangkai1995/vue-mini/blob/master/README-ch.md)**
 
-#####  **This is a monitored library used in javaScript**
+#####  **This is one for learning! Mini MVVM Library Based on Vue. Js**
 
 - **About vue-mini:**  This is a mini framework based on Vue. Js: MVVM, 
     - Only the core MVVM syntax sugar V-model, vnode and so on. Ps: version 0.0.0 does not add diff patch，
