@@ -1,6 +1,6 @@
 # Vue-mini
 
- **[中文版本](https://github.com/vue-mini/blob/master/README-ch.md)**
+ **[中文版本](https://github.com/wangkai1995/vue-mini/blob/master/README-ch.md)**
 
 #####  **This is a monitored library used in javaScript**
 
@@ -8,7 +8,7 @@
     - Only the core MVVM syntax sugar V-model, vnode and so on. Ps: version 0.0.0 does not add diff patch，
     - Change the DOM event binding to: for example @ Click to vm-onclick,
     - Some common directives include:: { v-if=vm-if, v-class=vm-class,  v-for=vm-for, v-show=vm-show, v-model=vm-model }
-    - V-bind mode re-modify for example <p class="container"  :class="testClass"></p>  =>  <p class="container {{testClass}}" ></p>;,
+    - V-bind mode re-modify for example    (class="container"  :class="testClass") =>  (class="container {{testClass}}" );
     - Lifecycle reserved mounted, updated，
     - All other features are removed and the compressed size is 17KB, which I currently use in WebView activity H5
 - **Compatibility and support:** to vue.js

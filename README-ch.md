@@ -6,7 +6,7 @@
   - 只保留了核心MVVM等语法糖v-model, Vnode等 。 PS：0.0.0版本并未添加diff patch，
   - 关于DOM事件绑定修改为：例如 @click修改为vm-onClick,
   - 一些常用指令包括: { v-if=vm-if, v-class=vm-class,  v-for=vm-for, v-show=vm-show, v-model=vm-model }
-  -  v-bind方式重新修改 例如 <p class="container"  :class="testClass"></p>  =>  <p class="container {{testClass}}" ></p>;,
+  -  v-bind方式重新修改 例如  (class="container"  :class="testClass") =>  (class="container {{testClass}}" );
   - 生命周期保留mounted,updated，
   - 其他功能全部删除，压缩后大小为17kb, 目前我在webView activity H5中使用
 - **兼容与支持:**  同vue.js
