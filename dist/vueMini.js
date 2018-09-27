@@ -263,6 +263,7 @@ var createVNodeElement = exports.createVNodeElement = function createVNodeElemen
             if (Array.isArray(node)) {
                 node.map(function (item, index) {
                     index = i + 1 + index;
+                    item.parent = parent;
                     children.splice(index, 0, item);
                 });
                 children.splice(i, 1);
@@ -1065,7 +1066,7 @@ function generateForCode(node) {
     var children = generateChildren(node.children);
     var EventCode = generateEvent(node.event);
     var directiveCode = generateDirective(node.directive);
-    return '_l(' + node.forSource + ',function(' + node.forkey + ',$index){ return _c("' + tag + '",' + attrs + ',' + children + ',' + EventCode + ',' + directiveCode + ') })';
+    return '_l(' + node.forSource + ',function(' + node.forkey + ',$index){ return _c("' + tag + '",' + attrs + ',' + children + ',' + EventCode + ',' + directiveCode + ')})';
 }
 
 //vm-if directive特殊生成
@@ -1210,7 +1211,7 @@ function genreateAttr(attrs) {
 
 
 Object.defineProperty(exports, "__esModule", {
-   value: true
+    value: true
 });
 exports.compileTemplateToFn = undefined;
 
@@ -1220,14 +1221,15 @@ var _generate = __webpack_require__(13);
 
 //编译模板字符串为可执行函数
 var compileTemplateToFn = exports.compileTemplateToFn = function compileTemplateToFn(template, options, context) {
-   //开始解析模板 生成虚拟元素
-   var ast = (0, _index.parse)(template.trim(), options);
-   // console.log('AST',ast)
+    //开始解析模板 生成虚拟元素
+    var ast = (0, _index.parse)(template.trim(), options);
+    // console.log('AST',ast)
 
-   var render = (0, _generate.generateCode)(ast, options.rootEl);
-   // console.log('render',render)
+    var render = (0, _generate.generateCode)(ast, options.rootEl);
+    // console.log('render', render)
+    // debugger;
 
-   return new Function(render);
+    return new Function(render);
 };
 
 /***/ }),
