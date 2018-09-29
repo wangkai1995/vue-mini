@@ -86,30 +86,9 @@ return /******/ (function(modules) { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-// import VConsole from 'vconsole';
-// var vConsole = new VConsole();
 
-var warnError = function warnError(error, fn) {
-    console.error(error);
-    console.log(error);
-    if (fn) {
-        fn();
-    }
-};
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-//抛出错误警告
-exports.default = warnError;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 var isObject = exports.isObject = function isObject(obj) {
     return Object.prototype.toString.call(obj) === '[object Object]';
 };
@@ -122,6 +101,33 @@ var isEmpty = exports.isEmpty = function isEmpty(obj) {
         return false;
     }
     return true;
+};
+
+var isElement = exports.isElement = function isElement(value) {
+    return (typeof HTMLElement === 'undefined' ? 'undefined' : _typeof(HTMLElement)) === 'object' ? value instanceof HTMLElement : //DOM2
+    value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === "object" && value !== null && value.nodeType === 1 && typeof value.nodeName === "string";
+};
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+// import VConsole from 'vconsole';
+// var vConsole = new VConsole();
+
+
+//抛出错误警告
+var warnError = exports.warnError = function warnError(error, fn) {
+    console.error(error);
+    if (fn) {
+        fn();
+    }
 };
 
 /***/ }),
@@ -209,9 +215,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createListVNode = exports.createEmptyVnode = exports.createVNodeText = exports.createVNodeElement = undefined;
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
-var _error = __webpack_require__(0);
+var _error = __webpack_require__(1);
 
 //虚拟节点
 var Vnode = function Vnode(option) {
@@ -331,7 +337,7 @@ var _domOperation = __webpack_require__(2);
 
 var nodeOp = _interopRequireWildcard(_domOperation);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _process = __webpack_require__(5);
 
@@ -382,7 +388,7 @@ exports.cerateElementBindAddParent = cerateElementBindAddParent;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 exports.processShowDirective = exports.processClassDirective = exports.processModelDirective = exports.processDirective = exports.setEventListener = exports.setAttribute = undefined;
 
@@ -390,7 +396,7 @@ var _domOperation = __webpack_require__(2);
 
 var nodeOp = _interopRequireWildcard(_domOperation);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -399,111 +405,111 @@ var styleSeparatorReg = /(;)+\s*$/;
 
 //设置属性
 var setAttribute = function setAttribute(refElm, attrs) {
-	for (var key in attrs) {
-		//checked 特殊处理
-		if (key === 'checked') {
-			//因为这里是转换成了字符串
-			if (JSON.parse(attrs[key])) {
-				nodeOp.setAttribute(refElm, key, 'checked');
-			}
-			continue;
-		}
-		nodeOp.setAttribute(refElm, key, attrs[key]);
-	}
+    for (var key in attrs) {
+        //checked 特殊处理
+        if (key === 'checked') {
+            //因为这里是转换成了字符串
+            if (JSON.parse(attrs[key])) {
+                nodeOp.setAttribute(refElm, key, 'checked');
+            }
+            continue;
+        }
+        nodeOp.setAttribute(refElm, key, attrs[key]);
+    }
 };
 
 //绑定事件
 var setEventListener = function setEventListener(refElm, events) {
-	if (!Array.isArray(events) || events.length === 0) {
-		return false;
-	}
-	for (var i = 0; i < events.length; i++) {
-		(function (count) {
-			//这个标志用来解决闭包呢concat el问题
-			var flag = true;
-			events[count].instance = function (el) {
-				if (!events[count].params) {
-					events[count].params = [];
-				}
-				//组装参数
-				if (flag) {
-					events[count].params = events[count].params.concat([el]);
-					flag = false;
-				}
-				//执行
-				events[count].exp.apply(this, events[count].params);
-			};
-		})(i);
-		refElm.addEventListener(events[i].name, events[i].instance);
-	}
+    if (!Array.isArray(events) || events.length === 0) {
+        return false;
+    }
+    for (var i = 0; i < events.length; i++) {
+        (function (count) {
+            //这个标志用来解决闭包呢concat el问题
+            var flag = true;
+            events[count].instance = function (el) {
+                if (!events[count].params) {
+                    events[count].params = [];
+                }
+                //组装参数
+                if (flag) {
+                    events[count].params = events[count].params.concat([el]);
+                    flag = false;
+                }
+                //执行
+                events[count].exp.apply(this, events[count].params);
+            };
+        })(i);
+        refElm.addEventListener(events[i].name, events[i].instance);
+    }
 };
 
 //设置相应指令
 //对应的删除还没做
 var processDirective = function processDirective(Vnode, directives) {
-	if (!Array.isArray(directives) || directives.length === 0) {
-		return false;
-	}
-	for (var i = 0; i < directives.length; i++) {
-		var directive = directives[i];
+    if (!Array.isArray(directives) || directives.length === 0) {
+        return false;
+    }
+    for (var i = 0; i < directives.length; i++) {
+        var directive = directives[i];
 
-		//model特殊处理
-		if (directive.name === 'model' && !directive.event) {
-			processModelDirective(Vnode, directive);
-			continue;
-		}
-		//class特殊处理
-		if (directive.name === 'class' && !(0, _util.isEmpty)(directive.exp)) {
-			processClassDirective(Vnode, directive);
-			continue;
-		}
-		//show特殊处理
-		if (directive.name === 'show') {
-			processShowDirective(Vnode, directive);
-			continue;
-		}
-	}
+        //model特殊处理
+        if (directive.name === 'model' && !directive.event) {
+            processModelDirective(Vnode, directive);
+            continue;
+        }
+        //class特殊处理
+        if (directive.name === 'class' && !(0, _util.isEmpty)(directive.exp)) {
+            processClassDirective(Vnode, directive);
+            continue;
+        }
+        //show特殊处理
+        if (directive.name === 'show') {
+            processShowDirective(Vnode, directive);
+            continue;
+        }
+    }
 };
 
 //处理model指令
 var processModelDirective = function processModelDirective(Vnode, directive) {
-	directive.event = function (el) {
-		directive.exp(el.target.value);
-	};
-	Vnode.attrs['value'] = directive.value;
-	Vnode.elm.addEventListener('input', directive.event);
+    directive.event = function (el) {
+        directive.exp(el.target.value);
+    };
+    Vnode.attrs['value'] = directive.value;
+    Vnode.elm.addEventListener('input', directive.event);
 };
 
 //处理class指令
 var processClassDirective = function processClassDirective(Vnode, directive) {
-	var attrs = Vnode.attrs;
-	var classList = '';
+    var attrs = Vnode.attrs;
+    var classList = '';
 
-	//属性中是否存在class
-	if (!(0, _util.isEmpty)(attrs)) {
-		classList = attrs['class'] != null ? attrs['class'] : '';
-	}
-	//遍历class exp
-	for (var className in directive.exp) {
-		if (directive.exp[className]) {
-			classList += ' ' + className;
-		}
-	}
-	if (classList.length > 0) {
-		Vnode.attrs['class'] = classList;
-	}
+    //属性中是否存在class
+    if (!(0, _util.isEmpty)(attrs)) {
+        classList = attrs['class'] != null ? attrs['class'] : '';
+    }
+    //遍历class exp
+    for (var className in directive.exp) {
+        if (directive.exp[className]) {
+            classList += ' ' + className;
+        }
+    }
+    if (classList.length > 0) {
+        Vnode.attrs['class'] = classList;
+    }
 };
 
 //处理show指令
 var processShowDirective = function processShowDirective(Vnode, directive) {
-	var style = Vnode.attrs['style'];
-	if (style && style.length > 0) {
-		var display = directive.exp ? 'display:show;' : 'display:none;';
-		style += styleSeparatorReg.test(style) ? display : ';' + display;
-	} else {
-		style = directive.exp ? 'display:show;' : 'display:none;';
-	}
-	Vnode.attrs['style'] = style;
+    var style = Vnode.attrs['style'];
+    if (style && style.length > 0) {
+        var display = directive.exp ? 'display:show;' : 'display:none;';
+        style += styleSeparatorReg.test(style) ? display : ';' + display;
+    } else {
+        style = directive.exp ? 'display:show;' : 'display:none;';
+    }
+    Vnode.attrs['style'] = style;
 };
 
 exports.setAttribute = setAttribute;
@@ -663,15 +669,46 @@ var defineEventProxy = exports.defineEventProxy = function defineEventProxy(vue)
 
 
 Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _error = __webpack_require__(1);
+
+Object.keys(_error).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _error[key];
+    }
+  });
+});
+
+var _tool = __webpack_require__(10);
+
+Object.keys(_tool).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _tool[key];
+    }
+  });
+});
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.bind = exports.toStringify = exports.makeMap = undefined;
 
-var _error = __webpack_require__(0);
-
-var _error2 = _interopRequireDefault(_error);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _error = __webpack_require__(1);
 
 //设置映射
 var makeMap = exports.makeMap = function makeMap(key, valueString) {
@@ -680,7 +717,7 @@ var makeMap = exports.makeMap = function makeMap(key, valueString) {
     if (Array.isArray(list) && list.length > 0) {
         map[key] = list;
     } else {
-        (0, _error2.default)('set map error: valueString type error or value error');
+        (0, _error.warnError)('set map error: valueString type error or value error');
         return false;
     }
     return function (value) {
@@ -705,25 +742,25 @@ var bind = exports.bind = function bind(event) {
 };
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(9);
 
-var _render = __webpack_require__(20);
+var _render = __webpack_require__(21);
 
-var _data = __webpack_require__(18);
+var _data = __webpack_require__(19);
 
-var _method = __webpack_require__(19);
+var _method = __webpack_require__(20);
 
-var _watcher = __webpack_require__(22);
+var _watcher = __webpack_require__(23);
 
 var _watcher2 = _interopRequireDefault(_watcher);
 
@@ -734,52 +771,52 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var uid = 0;
 
 var VueMini = function VueMini(option) {
-	if (!option) {
-		(0, _index.warnError)('Init error :option not undefined');
-		return this;
-	}
-	this.id = uid++;
-	this.self = this;
-	this._el = option.el;
-	this._option = option;
-	this._rootParent = option.rootParent ? option.rootParent : '';
+    if (!option) {
+        (0, _index.warnError)('Init error :option not undefined');
+        return this;
+    }
+    this.id = uid++;
+    this.self = this;
+    this._el = option.el;
+    this._option = option;
+    this._rootParent = option.rootParent ? option.rootParent : '';
 
-	//生命周期 后面还需完善
-	if (option.updated && typeof option.updated === 'function') {
-		this.updated = option.updated;
-	}
+    //生命周期 后面还需完善
+    if (option.updated && typeof option.updated === 'function') {
+        this.updated = option.updated;
+    }
 
-	if (option.mounted && typeof option.mounted === 'function') {
-		this.mounted = option.mounted;
-	}
+    if (option.mounted && typeof option.mounted === 'function') {
+        this.mounted = option.mounted;
+    }
 
-	//执行初始化
-	this.$init();
+    //执行初始化
+    this.$init();
 };
 
 /**************  原型方法   ***************/
 //初始化
 VueMini.prototype.$init = function () {
-	//初始化编译	
-	(0, _render.initCompiler)(this);
-	//初始化data数据建立绑定
-	(0, _data.initData)(this);
-	//初始化mothod方法
-	(0, _method.initMethod)(this);
+    //初始化编译	
+    (0, _render.initCompiler)(this);
+    //初始化data数据建立绑定
+    (0, _data.initData)(this);
+    //初始化mothod方法
+    (0, _method.initMethod)(this);
 
-	//开始挂载
-	this.$mount();
+    //开始挂载
+    this.$mount();
 
-	return this;
+    return this;
 };
 
 //挂载
 VueMini.prototype.$mount = function () {
-	if (!this._render) {
-		(0, _index.warnError)('$mount error: VueMini._render  is not defined');
-	}
-	var $render = this._render;
-	this._watcher = new _watcher2.default(this, $render);
+    if (!this._render) {
+        (0, _index.warnError)('$mount error: VueMini._render  is not defined');
+    }
+    var $render = this._render;
+    this._watcher = new _watcher2.default(this, $render);
 };
 
 /**********   render中使用  ***********/
@@ -792,38 +829,6 @@ VueMini.prototype._e = _index.bind;
 exports.default = VueMini;
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.patch = undefined;
-
-var _create = __webpack_require__(4);
-
-var _update = __webpack_require__(12);
-
-//将虚拟节点更新到真实DOM中
-var patch = exports.patch = function patch(oldNode, Vnode, isRoot) {
-	//是否是根节点 并且老节点是空节点
-	if (isRoot && oldNode.empty) {
-		//创建新元素 更新到DOM
-		(0, _create.cerateElementBindAddParent)(Vnode, Vnode.parent);
-		//删除老节点 从DOM中删除对应真实节点
-		(0, _update.removeElement)(oldNode);
-	} else if (oldNode && Vnode) {
-		//不是的话 那么更新对比节点
-		// console.log(oldNode,Vnode)
-		(0, _update.updateElement)(oldNode, Vnode);
-	}
-	return Vnode;
-};
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -831,7 +836,38 @@ var patch = exports.patch = function patch(oldNode, Vnode, isRoot) {
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
+});
+exports.patch = undefined;
+
+var _create = __webpack_require__(4);
+
+var _update = __webpack_require__(13);
+
+//将虚拟节点更新到真实DOM中
+var patch = exports.patch = function patch(oldNode, Vnode, isRoot) {
+    //是否是根节点 并且老节点是空节点
+    if (isRoot && oldNode.empty) {
+        //创建新元素 更新到DOM
+        (0, _create.cerateElementBindAddParent)(Vnode, Vnode.parent);
+        //删除老节点 从DOM中删除对应真实节点
+        (0, _update.removeElement)(oldNode);
+    } else if (oldNode && Vnode) {
+        //不是的话 那么更新对比节点
+        (0, _update.updateElement)(oldNode, Vnode);
+    }
+    return Vnode;
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
 exports.updateChildren = exports.updateText = exports.updateAttrs = exports.updateDirective = exports.updateElement = exports.removeElement = undefined;
 
@@ -839,7 +875,7 @@ var _domOperation = __webpack_require__(2);
 
 var nodeOp = _interopRequireWildcard(_domOperation);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _create = __webpack_require__(4);
 
@@ -851,180 +887,183 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 //这里还不完整
 var removeElement = function removeElement(Vnode) {
-	if (Vnode.empty) {
-		var parent = nodeOp.getParent(Vnode.elm);
-		nodeOp.removeChild(parent, Vnode.elm);
-	} else {
-		//这里还要卸载相应事件等等
-		//还不完整
-		var parent = nodeOp.getParent(Vnode.elm);
-		nodeOp.removeChild(parent, Vnode.elm);
-	}
+    if (Vnode.empty) {
+        var parent = nodeOp.getParent(Vnode.elm);
+        nodeOp.removeChild(parent, Vnode.elm);
+    } else {
+        //这里还要卸载相应事件等等
+        //还不完整
+        var parent = nodeOp.getParent(Vnode.elm);
+        nodeOp.removeChild(parent, Vnode.elm);
+    }
 };
 
 /**************************    更新部分         *****************************/
 //这里还不完整
 var updateElement = function updateElement(oldNode, Vnode) {
-	//如果老节点存在,新节点不存在
-	if (oldNode && !Vnode) {
-		removeElement(oldNode);
-		return false;
-	}
-	//如果新节点存在,老节点不存在
-	if (!oldNode && Vnode) {
-		var parentElm = Vnode.parent.elm;
-		(0, _create.cerateElementBindAddParent)(Vnode, parentElm);
-		return false;
-	}
-	//如果节点类型出现不匹配
-	if (Vnode.VnodeType !== oldNode.VnodeType) {
-		//新老节点出现类型变化 则重新生产并且替换
-		Vnode = (0, _create.cerateElement)(Vnode);
-		nodeOp.repalceNode(Vnode.parent.elm, Vnode.elm, oldNode.elm);
-		return false;
-	}
+    //如果老节点存在,新节点不存在
+    if (oldNode && !Vnode) {
+        removeElement(oldNode);
+        return false;
+    }
+    //如果新节点存在,老节点不存在
+    if (!oldNode && Vnode) {
+        var parentElm = Vnode.parent.elm;
+        (0, _create.cerateElementBindAddParent)(Vnode, parentElm);
+        return false;
+    }
+    //如果节点类型出现不匹配
+    if (Vnode.VnodeType !== oldNode.VnodeType) {
+        //新老节点出现类型变化 则重新生产并且替换
+        Vnode = (0, _create.cerateElement)(Vnode);
+        nodeOp.repalceNode(Vnode.parent.elm, Vnode.elm, oldNode.elm);
+        return false;
+    }
 
-	//更新组件
-	if (Vnode.VnodeType === 1) {
-		Vnode.elm = oldNode.elm;
-		updateDirective(oldNode, Vnode);
-		updateAttrs(oldNode, Vnode);
-		updateChildren(oldNode.children, Vnode.children);
-	} else if (Vnode.VnodeType === 2) {
-		Vnode.elm = oldNode.elm;
-		updateText(oldNode, Vnode);
-	}
+    //更新组件
+    if (Vnode.VnodeType === 1) {
+        Vnode.elm = oldNode.elm;
+        updateDirective(oldNode, Vnode);
+        updateAttrs(oldNode, Vnode);
+        updateChildren(oldNode.children, Vnode.children);
+    } else if (Vnode.VnodeType === 2) {
+        Vnode.elm = oldNode.elm;
+        updateText(oldNode, Vnode);
+    }
 };
 
 //更新指令
 var updateDirective = function updateDirective(oldNode, Vnode) {
-	var oldDirective = oldNode.directives;
-	var nowDirective = Vnode.directives;
-	if (!nowDirective || nowDirective.length === 0) {
-		return false;
-	}
-	//遍历新指令依次做对比更新
-	for (var i = 0; i < nowDirective.length; i++) {
-		var now = nowDirective[i];
-		var old = getOldDirectiveValue(now.name);
-		//处理相应指令
-		switch (now.name) {
-			case 'model':
-				if (!old) {
-					(0, _process.processModelDirective)(Vnode, now);
-				} else if (old.value !== now.value) {
-					//更新值
-					Vnode.attrs['value'] = now.value;
-				}
-				break;
-			case 'class':
-				//这里可能存在性能损耗
-				(0, _process.processClassDirective)(Vnode, now);
-				break;
-			case 'show':
-				//这里可能存在性能损耗
-				(0, _process.processShowDirective)(Vnode, now);
-				break;
-		}
-	}
+    var oldDirective = oldNode.directives;
+    var nowDirective = Vnode.directives;
+    if (!nowDirective || nowDirective.length === 0) {
+        return false;
+    }
+    //遍历新指令依次做对比更新
+    for (var i = 0; i < nowDirective.length; i++) {
+        var now = nowDirective[i];
+        var old = getOldDirectiveValue(now.name);
+        //处理相应指令
+        switch (now.name) {
+            case 'model':
+                if (!old) {
+                    (0, _process.processModelDirective)(Vnode, now);
+                } else if (old.value !== now.value) {
+                    //更新值
+                    Vnode.attrs['value'] = now.value;
+                }
+                break;
+            case 'class':
+                //这里可能存在性能损耗
+                (0, _process.processClassDirective)(Vnode, now);
+                break;
+            case 'show':
+                //这里可能存在性能损耗
+                (0, _process.processShowDirective)(Vnode, now);
+                break;
+        }
+    }
 
-	//获取旧指令集合中指令名对应的指令
-	function getOldDirectiveValue(directiveName) {
-		if (!oldDirective || oldDirective.length === 0) {
-			return false;
-		}
-		for (var i = 0; i < oldDirective.length; i++) {
-			if (oldDirective[i].name === directiveName) {
-				return oldDirective[i];
-			}
-		}
-		return false;
-	}
+    //获取旧指令集合中指令名对应的指令
+    function getOldDirectiveValue(directiveName) {
+        if (!oldDirective || oldDirective.length === 0) {
+            return false;
+        }
+        for (var i = 0; i < oldDirective.length; i++) {
+            if (oldDirective[i].name === directiveName) {
+                return oldDirective[i];
+            }
+        }
+        return false;
+    }
 };
 
 //更新属性
 var updateAttrs = function updateAttrs(oldNode, Vnode) {
-	var refElm = Vnode.elm;
-	var oldAttrs = oldNode.attrs;
-	var nowAttrs = Vnode.attrs;
+    var refElm = Vnode.elm;
+    var oldAttrs = oldNode.attrs;
+    var nowAttrs = Vnode.attrs;
 
-	// console.log(nowAttrs,oldAttrs)
+    // console.log(nowAttrs, oldAttrs)
 
-	if (!oldAttrs && !nowAttrs) {
-		return false;
-	}
-	var nowKeys = nowAttrs && !(0, _util.isEmpty)(nowAttrs) ? Object.keys(nowAttrs) : [];
-	//遍历新属性集合更新对应节点属性
-	for (var i = 0; i < nowKeys.length; i++) {
-		var key = nowKeys[i];
-		//如果老节点没有
-		if (!oldAttrs[key]) {
-			//checked 特殊处理
-			if (key === 'checked') {
-				//因为这里是转换成了字符串
-				if (JSON.parse(nowAttrs[key])) {
-					nodeOp.setAttribute(refElm, key, 'checked');
-				}
-			} else {
-				nodeOp.setAttribute(refElm, key, nowAttrs[key]);
-			}
-			continue;
-		}
-		//如果老节点有 那么比较
-		if (oldAttrs[key] !== nowAttrs[key]) {
-			delete oldAttrs[key];
-			//checked 特殊处理
-			if (key === 'checked') {
-				//因为这里是转换成了字符串
-				if (JSON.parse(nowAttrs[key])) {
-					nodeOp.setAttribute(refElm, key, 'checked');
-				} else {
-					nodeOp.removeAttribute(refElm, key);
-				}
-				//checked end
-			} else {
-				nodeOp.setAttribute(refElm, key, nowAttrs[key]);
-			}
-		}
-	}
-	//遍历旧属性集合 这里剩下的都是需要删除的
-	var oldKeys = oldAttrs && (0, _util.isEmpty)(oldAttrs) ? Object.keys(oldAttrs) : [];
-	for (var i = 0; i < oldKeys.length; i++) {
-		var key = oldKeys[i];
-		delete oldAttrs[key];
-		nodeOp.removeAttribute(refElm, key);
-	}
+    if (!oldAttrs && !nowAttrs) {
+        return false;
+    }
+    var nowKeys = nowAttrs && !(0, _util.isEmpty)(nowAttrs) ? Object.keys(nowAttrs) : [];
+    //遍历新属性集合更新对应节点属性
+    for (var i = 0; i < nowKeys.length; i++) {
+        var key = nowKeys[i];
+        //如果老节点没有
+        if (!oldAttrs[key]) {
+            //checked 特殊处理
+            if (key === 'checked') {
+                //因为这里是转换成了字符串
+                if (JSON.parse(nowAttrs[key])) {
+                    nodeOp.setAttribute(refElm, key, 'checked');
+                }
+            } else {
+                nodeOp.setAttribute(refElm, key, nowAttrs[key]);
+            }
+            continue;
+        }
+        //如果老节点有 那么比较
+        if (oldAttrs[key] !== nowAttrs[key]) {
+            delete oldAttrs[key];
+            //checked 特殊处理
+            if (key === 'checked') {
+                //因为这里是转换成了字符串
+                if (JSON.parse(nowAttrs[key])) {
+                    nodeOp.setAttribute(refElm, key, 'checked');
+                } else {
+                    nodeOp.removeAttribute(refElm, key);
+                }
+                //checked end
+            } else {
+                nodeOp.setAttribute(refElm, key, nowAttrs[key]);
+            }
+        } else {
+            //相同则删除老节点的
+            delete oldAttrs[key];
+        }
+    }
+    //遍历旧属性集合 这里剩下的都是需要删除的
+    var oldKeys = oldAttrs && !(0, _util.isEmpty)(oldAttrs) ? Object.keys(oldAttrs) : [];
+    for (var i = 0; i < oldKeys.length; i++) {
+        var key = oldKeys[i];
+        nodeOp.removeAttribute(refElm, key);
+        delete oldAttrs[key];
+    }
 };
 
 //更新文本内容
 var updateText = function updateText(oldNode, Vnode) {
-	if (oldNode.text !== Vnode.text) {
-		nodeOp.setText(Vnode.elm, Vnode.text);
-	}
+    if (oldNode.text !== Vnode.text) {
+        nodeOp.setText(Vnode.elm, Vnode.text);
+    }
 };
 
 //更新子节点
 var updateChildren = function updateChildren(oldChildren, children) {
-	//子节点递归更新
-	var len = children.length;
-	for (var i = 0; i < len; i++) {
-		var Vnode = children[i];
-		var oldVnode;
+    //子节点递归更新
+    var len = children.length;
+    for (var i = 0; i < len; i++) {
+        var Vnode = children[i];
+        var oldVnode;
 
-		if (oldChildren && oldChildren[i]) {
-			oldVnode = oldChildren[i];
-		} else {
-			oldVnode = false;
-		}
-		updateElement(oldVnode, Vnode);
-	}
+        if (oldChildren && oldChildren[i]) {
+            oldVnode = oldChildren[i];
+        } else {
+            oldVnode = false;
+        }
+        updateElement(oldVnode, Vnode);
+    }
 
-	if (oldChildren) {
-		//删除余下的老节点
-		for (var i = len; i < oldChildren.length; i++) {
-			updateElement(oldChildren[i], false);
-		}
-	}
+    if (oldChildren) {
+        //删除余下的老节点
+        for (var i = len; i < oldChildren.length; i++) {
+            updateElement(oldChildren[i], false);
+        }
+    }
 };
 
 exports.removeElement = removeElement;
@@ -1035,7 +1074,7 @@ exports.updateText = updateText;
 exports.updateChildren = updateChildren;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1204,7 +1243,7 @@ function genreateAttr(attrs) {
 }
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1215,9 +1254,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.compileTemplateToFn = undefined;
 
-var _index = __webpack_require__(17);
+var _index = __webpack_require__(18);
 
-var _generate = __webpack_require__(13);
+var _generate = __webpack_require__(14);
 
 //编译模板字符串为可执行函数
 var compileTemplateToFn = exports.compileTemplateToFn = function compileTemplateToFn(template, options, context) {
@@ -1233,7 +1272,7 @@ var compileTemplateToFn = exports.compileTemplateToFn = function compileTemplate
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1244,7 +1283,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.parseAttrs = parseAttrs;
 
-var _error = __webpack_require__(0);
+var _error = __webpack_require__(1);
 
 //捕获事件
 var eventReg = /vm-on([a-zA-Z]+)/;
@@ -1386,7 +1425,7 @@ function processSurplus(elm, attrMap) {
 }
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1628,7 +1667,7 @@ var parseHTML = exports.parseHTML = function parseHTML(html, option) {
 };
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1639,15 +1678,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.parse = undefined;
 
-var _element = __webpack_require__(23);
+var _element = __webpack_require__(24);
 
-var _error = __webpack_require__(0);
+var _error = __webpack_require__(1);
 
-var _htmlParse = __webpack_require__(16);
+var _htmlParse = __webpack_require__(17);
 
 var _textParse = __webpack_require__(6);
 
-var _attrParse = __webpack_require__(15);
+var _attrParse = __webpack_require__(16);
 
 var parse = exports.parse = function parse(template, options) {
 	var stack = [];
@@ -1735,7 +1774,7 @@ var parse = exports.parse = function parse(template, options) {
 };
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1748,7 +1787,7 @@ exports.initData = undefined;
 
 var _proxy = __webpack_require__(8);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(22);
 
 var initData = exports.initData = function initData(vue) {
     vue._data = vue._option.data;
@@ -1760,7 +1799,7 @@ var initData = exports.initData = function initData(vue) {
 };
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1782,7 +1821,7 @@ var initMethod = exports.initMethod = function initMethod(vue) {
 };
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1793,9 +1832,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initCompiler = undefined;
 
-var _error = __webpack_require__(0);
+var _error = __webpack_require__(1);
 
-var _index = __webpack_require__(14);
+var _index = __webpack_require__(15);
 
 //查找元素 不存在则返回
 function queryDom(el) {
@@ -1841,7 +1880,7 @@ var initCompiler = exports.initCompiler = function initCompiler(vue) {
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1856,7 +1895,7 @@ var _dep = __webpack_require__(7);
 
 var _dep2 = _interopRequireDefault(_dep);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1900,102 +1939,104 @@ var defineDataToObserver = exports.defineDataToObserver = function defineDataToO
 };
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
-var _error = __webpack_require__(0);
+var _index = __webpack_require__(9);
+
+var _util = __webpack_require__(0);
 
 var _dep = __webpack_require__(7);
 
-var _index = __webpack_require__(3);
+var _index2 = __webpack_require__(3);
 
-var _patch = __webpack_require__(11);
+var _patch = __webpack_require__(12);
 
 var _domOperation = __webpack_require__(2);
 
 var Watcher = function Watcher(vue, render) {
-	this._vue = vue;
-	this.depId = [];
-	this._render = render;
-	this.Vnode = null;
-	//首次挂载
-	this.render(true /*isRoot*/);
+    this._vue = vue;
+    this.depId = [];
+    this._render = render;
+    this.Vnode = null;
+    //首次挂载
+    this.render(true /*isRoot*/);
 };
 
 //添加绑定
 Watcher.prototype.add = function (dep) {
-	//如果没有重复的dep则建立绑定
-	if (this.depId.indexOf(dep.id) === -1) {
-		this.depId.push(dep.id);
-		dep.add(this);
-	}
+    //如果没有重复的dep则建立绑定
+    if (this.depId.indexOf(dep.id) === -1) {
+        this.depId.push(dep.id);
+        dep.add(this);
+    }
 };
 
 //更新
 Watcher.prototype.update = function () {
-	var self = this;
-	setTimeout(function () {
-		self.render.call(self, false);
-		//如果有更新回调事件,那么调用
-		if (self._vue.updated) {
-			self._vue.updated();
-		}
-	}, 0);
+    var self = this;
+    setTimeout(function () {
+        self.render.call(self, false);
+        //如果有更新回调事件,那么调用
+        if (self._vue.updated) {
+            self._vue.updated();
+        }
+    }, 0);
 };
 
 Watcher.prototype.render = function (isRoot) {
-	var el = (0, _domOperation.queryNode)(this._vue._el);
-	var Vnode;
-	var oldVnode;
-	if (!el) {
-		(0, _error.warnError)('mount error: is new VueMini params el is no query dom');
-		return false;
-	}
-	//生成
-	try {
-		(0, _dep.setDepTarget)(this);
-		// var start  = new Date().getTime();
-		Vnode = this._render.call(this._vue);
-		(0, _dep.clearDepTarget)();
-	} catch (e) {
-		(0, _error.warnError)('mount error: is VueMini render error, detail message a ' + e);
-		(0, _dep.clearDepTarget)();
-	}
-	//挂载
-	try {
-		if (this.Vnode) {
-			oldVnode = this.Vnode;
-		} else {
-			oldVnode = (0, _index.createEmptyVnode)();
-			oldVnode.elm = el;
-			//初次挂载事件
-			if (this._vue.mounted) {
-				var self = this;
-				setTimeout(function () {
-					self._vue.mounted.call(self._vue);
-				});
-			}
-		}
-		//将虚拟节点 更新到真实dom上
-		this.Vnode = (0, _patch.patch)(oldVnode, Vnode, isRoot /*isRoot*/);
-		// var end = new Date().getTime();
-		// console.log( end-start )
-	} catch (e) {
-		(0, _error.warnError)('mount error: is VueMini mount error, detail message a ' + e);
-	}
+    var el = (0, _util.isElement)(this._vue._el) ? this._vue._el : this._vue._el = (0, _domOperation.queryNode)(this._vue._el);
+    var Vnode;
+    var oldVnode;
+    if (!el) {
+        (0, _index.warnError)('mount error: is new VueMini params el is no query dom');
+        return false;
+    }
+    //生成
+    try {
+        (0, _dep.setDepTarget)(this);
+        // var start  = new Date().getTime();
+        Vnode = this._render.call(this._vue);
+        (0, _dep.clearDepTarget)();
+    } catch (e) {
+        (0, _index.warnError)('mount error: is VueMini render error, detail message a ' + e);
+        (0, _dep.clearDepTarget)();
+    }
+    //挂载
+    try {
+        if (this.Vnode) {
+            oldVnode = this.Vnode;
+        } else {
+            oldVnode = (0, _index2.createEmptyVnode)();
+            oldVnode.elm = el;
+            //初次挂载事件
+            if (this._vue.mounted) {
+                var self = this;
+                setTimeout(function () {
+                    self._vue.mounted.call(self._vue);
+                });
+            }
+        }
+        //将虚拟节点 更新到真实dom上
+        this.Vnode = (0, _patch.patch)(oldVnode, Vnode, isRoot /*isRoot*/);
+        // var end = new Date().getTime();
+        // console.log( end-start )
+    } catch (e) {
+        (0, _index.warnError)('mount error: is VueMini mount error, detail message a ' + e);
+    }
 };
 
 exports.default = Watcher;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2006,7 +2047,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.isUnaryTag = exports.canBeleftOpenTag = exports.isNonPhrasingTag = undefined;
 
-var _tool = __webpack_require__(9);
+var _tool = __webpack_require__(10);
 
 //不能被分局的标签
 var isNonPhrasingTag = exports.isNonPhrasingTag = (0, _tool.makeMap)('NonPhrasing', 'address,article,aside,base,blockquote,body,caption,col,colgroup,dd,' + 'details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,' + 'h1,h2,h3,h4,h5,h6,head,header,hgroup,hr,html,legend,li,menuitem,meta,' + 'title,tr,track');
@@ -2018,45 +2059,10 @@ var canBeleftOpenTag = exports.canBeleftOpenTag = (0, _tool.makeMap)('beleftOpen
 var isUnaryTag = exports.isUnaryTag = (0, _tool.makeMap)('unaryTag', 'embed,img,image,input,link,meta,br');
 
 /***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _error = __webpack_require__(0);
-
-Object.keys(_error).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _error[key];
-    }
-  });
-});
-
-var _tool = __webpack_require__(9);
-
-Object.keys(_tool).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _tool[key];
-    }
-  });
-});
-
-/***/ }),
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(10);
+module.exports = __webpack_require__(11);
 
 
 /***/ })
