@@ -1,4 +1,6 @@
-import warnError from './error';
+import {
+    warnError
+} from './error';
 
 
 
