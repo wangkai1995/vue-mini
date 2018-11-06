@@ -173,6 +173,15 @@ var setAttribute = exports.setAttribute = function setAttribute(el, attrKey, att
 	el.setAttribute(attrKey, attrValue);
 };
 
+//设置节点值
+var setElementValue = exports.setElementValue = function setElementValue(el, valueKey, value) {
+	if (!el[valueKey]) {
+		return false;
+	}
+	el[valueKey] = value;
+	return true;
+};
+
 //复制节点
 var cloneElement = exports.cloneElement = function cloneElement(el, flag) {
 	return el.cloneElement(flag ? true : false);
@@ -869,7 +878,7 @@ var patch = exports.patch = function patch(oldNode, Vnode, isRoot) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.updateChildren = exports.updateText = exports.updateAttrs = exports.updateDirective = exports.updateElement = exports.removeElement = undefined;
+exports.updateChildren = exports.updateText = exports.updateInput = exports.updateAttrs = exports.updateDirective = exports.updateElement = exports.removeElement = undefined;
 
 var _domOperation = __webpack_require__(2);
 
@@ -951,6 +960,8 @@ var updateDirective = function updateDirective(oldNode, Vnode) {
                 } else if (old.value !== now.value) {
                     //更新值
                     Vnode.attrs['value'] = now.value;
+                } else {
+                    Vnode.attrs['value'] = old.value;
                 }
                 break;
             case 'class':
@@ -983,11 +994,12 @@ var updateAttrs = function updateAttrs(oldNode, Vnode) {
     var refElm = Vnode.elm;
     var oldAttrs = oldNode.attrs;
     var nowAttrs = Vnode.attrs;
-
-    // console.log(nowAttrs, oldAttrs)
-
     if (!oldAttrs && !nowAttrs) {
         return false;
+    }
+    //如果是input 特殊更新
+    if (Vnode.tagName === 'input') {
+        return updateInput(oldNode, Vnode);
     }
     var nowKeys = nowAttrs && !(0, _util.isEmpty)(nowAttrs) ? Object.keys(nowAttrs) : [];
     //遍历新属性集合更新对应节点属性
@@ -996,31 +1008,13 @@ var updateAttrs = function updateAttrs(oldNode, Vnode) {
         //如果老节点没有
         if (!oldAttrs[key]) {
             //checked 特殊处理
-            if (key === 'checked') {
-                //因为这里是转换成了字符串
-                if (JSON.parse(nowAttrs[key])) {
-                    nodeOp.setAttribute(refElm, key, 'checked');
-                }
-            } else {
-                nodeOp.setAttribute(refElm, key, nowAttrs[key]);
-            }
+            nodeOp.setAttribute(refElm, key, nowAttrs[key]);
             continue;
         }
         //如果老节点有 那么比较
         if (oldAttrs[key] !== nowAttrs[key]) {
+            nodeOp.setAttribute(refElm, key, nowAttrs[key]);
             delete oldAttrs[key];
-            //checked 特殊处理
-            if (key === 'checked') {
-                //因为这里是转换成了字符串
-                if (JSON.parse(nowAttrs[key])) {
-                    nodeOp.setAttribute(refElm, key, 'checked');
-                } else {
-                    nodeOp.removeAttribute(refElm, key);
-                }
-                //checked end
-            } else {
-                nodeOp.setAttribute(refElm, key, nowAttrs[key]);
-            }
         } else {
             //相同则删除老节点的
             delete oldAttrs[key];
@@ -1066,10 +1060,70 @@ var updateChildren = function updateChildren(oldChildren, children) {
     }
 };
 
+//input textare 等 value问题特殊更新
+var updateInput = function updateInput(oldNode, Vnode) {
+    var refElm = Vnode.elm;
+    var oldAttrs = oldNode.attrs;
+    var nowAttrs = Vnode.attrs;
+    if (!oldAttrs && !nowAttrs) {
+        return false;
+    }
+    var nowKeys = nowAttrs && !(0, _util.isEmpty)(nowAttrs) ? Object.keys(nowAttrs) : [];
+    //遍历新属性集合更新对应节点属性
+    for (var i = 0; i < nowKeys.length; i++) {
+        var key = nowKeys[i];
+        //如果老节点没有
+        if (!oldAttrs[key]) {
+            switch (key) {
+                case 'checked':
+                    if (JSON.parse(nowAttrs[key])) {
+                        nodeOp.setAttribute(refElm, key, 'checked');
+                    }
+                    break;
+                case 'value':
+                    nodeOp.setElementValue(refElm, key, nowAttrs[key]);
+                    break;
+                default:
+                    nodeOp.setAttribute(refElm, key, nowAttrs[key]);
+            }
+            continue;
+        }
+        //如果老节点有 那么比较
+        if (oldAttrs[key] !== nowAttrs[key]) {
+            switch (key) {
+                case 'checked':
+                    if (JSON.parse(nowAttrs[key])) {
+                        nodeOp.setAttribute(refElm, key, 'checked');
+                    } else {
+                        nodeOp.removeAttribute(refElm, key);
+                    }
+                    break;
+                case 'value':
+                    nodeOp.setElementValue(refElm, key, nowAttrs[key]);
+                    break;
+                default:
+                    nodeOp.setAttribute(refElm, key, nowAttrs[key]);
+            }
+            delete oldAttrs[key];
+        } else {
+            //相同则删除老节点的
+            delete oldAttrs[key];
+        }
+    }
+    //遍历旧属性集合 这里剩下的都是需要删除的
+    var oldKeys = oldAttrs && !(0, _util.isEmpty)(oldAttrs) ? Object.keys(oldAttrs) : [];
+    for (var i = 0; i < oldKeys.length; i++) {
+        var key = oldKeys[i];
+        nodeOp.removeAttribute(refElm, key);
+        delete oldAttrs[key];
+    }
+};
+
 exports.removeElement = removeElement;
 exports.updateElement = updateElement;
 exports.updateDirective = updateDirective;
 exports.updateAttrs = updateAttrs;
+exports.updateInput = updateInput;
 exports.updateText = updateText;
 exports.updateChildren = updateChildren;
 

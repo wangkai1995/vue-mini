@@ -35,6 +35,15 @@ export var setAttribute = function(el,attrKey,attrValue){
 }
 
 
+//设置节点值
+export var setElementValue = function(el,valueKey,value){
+	if(!el[valueKey]){
+		return false;
+	}
+	el[valueKey] = value;
+	return true;
+}
+
 //复制节点
 export var cloneElement = function(el,flag){
 	return el.cloneElement(flag?true:false);
