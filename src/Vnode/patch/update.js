@@ -1,8 +1,6 @@
 import * as nodeOp from '../dom-operation';
-import {
-    isEmpty
-} from '../../share/judge/util';
-
+import { isEmpty } from '../../share/judge/util';
+import { isElement } from '../../share/judge/util'
 import {
     cerateElement,
     cerateElementBindAddParent
@@ -22,12 +20,18 @@ import {
 
 //这里还不完整
 var removeElement = function(Vnode) {
+    //如果是body 不能删除
+    if(isElement(Vnode.elm) && Vnode.elm.nodeName === 'BODY'){
+        return false;
+    }
+    //正常卸载
     if (Vnode.empty) {
         var parent = nodeOp.getParent(Vnode.elm);
         nodeOp.removeChild(parent, Vnode.elm)
     } else {
         //这里还要卸载相应事件等等
-        //还不完整
+        //没有卸载相关事件,可能导致内存溢出
+        //暂未完成
         var parent = nodeOp.getParent(Vnode.elm);
         nodeOp.removeChild(parent, Vnode.elm)
     }

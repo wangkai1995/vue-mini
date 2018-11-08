@@ -1,6 +1,6 @@
 
 import { warnError } from '../share/utiliy/error';
-
+import { isElement } from '../share/judge/util'
 import { compileTemplateToFn } from '../compiler/index';
 
 
@@ -37,12 +37,14 @@ export var initCompiler = function(vue){
 	var option = vue._option
 	var el = option.el;
 	el = queryDom(el);
-	if(!vue._rootParent){
-		vue._rootParent = el.parentNode
-	}
-	if(!el){
+	if(!el || !isElement(el)){
 		warnError('Compiler Error: el not is Dom NodeType or not query element')
 		return false;
+	}
+	if(!vue._rootParent && el.nodeName !== 'BODY'){
+		vue._rootParent = el.parentNode
+	}else{
+		vue._rootParent = el
 	}
 	template = option.template || getOuterHTML(el);
 	//编译元素

@@ -1,5 +1,5 @@
 
-
+import { isUndefined } from '../share/judge/util';
 
 //当前目前属性映射到scopeKey
 function setProxy(target,scopeKey,key){
@@ -22,7 +22,9 @@ function setProxy(target,scopeKey,key){
 export var defineDataProxy = function(vue){
     //当前目前属性映射到_data
     for(var key in vue._data){
-        setProxy(vue,'_data',key);
+        if(isUndefined(vue[key])){
+            setProxy(vue,'_data',key);
+        }
     }
 }
 
@@ -32,7 +34,9 @@ export var defineDataProxy = function(vue){
 export var defineEventProxy = function(vue){
     //当前目前属性映射到_method
     for(var key in vue._method){
-        setProxy(vue,'_method',key);
+        if(isUndefined(vue[key])){
+            setProxy(vue,'_method',key);
+        }
     }
 }
 

@@ -89,6 +89,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+exports.isUndefined = isUndefined;
 var isObject = exports.isObject = function isObject(obj) {
     return Object.prototype.toString.call(obj) === '[object Object]';
 };
@@ -107,6 +108,10 @@ var isElement = exports.isElement = function isElement(value) {
     return (typeof HTMLElement === 'undefined' ? 'undefined' : _typeof(HTMLElement)) === 'object' ? value instanceof HTMLElement : //DOM2
     value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === "object" && value !== null && value.nodeType === 1 && typeof value.nodeName === "string";
 };
+
+function isUndefined(value) {
+    return value === undefined;
+}
 
 /***/ }),
 /* 1 */
@@ -637,7 +642,9 @@ exports.default = Dep;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.defineEventProxy = exports.defineDataProxy = undefined;
 
+var _util = __webpack_require__(0);
 
 //当前目前属性映射到scopeKey
 function setProxy(target, scopeKey, key) {
@@ -658,7 +665,9 @@ function setProxy(target, scopeKey, key) {
 var defineDataProxy = exports.defineDataProxy = function defineDataProxy(vue) {
     //当前目前属性映射到_data
     for (var key in vue._data) {
-        setProxy(vue, '_data', key);
+        if ((0, _util.isUndefined)(vue[key])) {
+            setProxy(vue, '_data', key);
+        }
     }
 };
 
@@ -666,7 +675,9 @@ var defineDataProxy = exports.defineDataProxy = function defineDataProxy(vue) {
 var defineEventProxy = exports.defineEventProxy = function defineEventProxy(vue) {
     //当前目前属性映射到_method
     for (var key in vue._method) {
-        setProxy(vue, '_method', key);
+        if ((0, _util.isUndefined)(vue[key])) {
+            setProxy(vue, '_method', key);
+        }
     }
 };
 
@@ -896,12 +907,18 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 //这里还不完整
 var removeElement = function removeElement(Vnode) {
+    //如果是body 不能删除
+    if ((0, _util.isElement)(Vnode.elm) && Vnode.elm.nodeName === 'BODY') {
+        return false;
+    }
+    //正常卸载
     if (Vnode.empty) {
         var parent = nodeOp.getParent(Vnode.elm);
         nodeOp.removeChild(parent, Vnode.elm);
     } else {
         //这里还要卸载相应事件等等
-        //还不完整
+        //没有卸载相关事件,可能导致内存溢出
+        //暂未完成
         var parent = nodeOp.getParent(Vnode.elm);
         nodeOp.removeChild(parent, Vnode.elm);
     }
@@ -1888,6 +1905,8 @@ exports.initCompiler = undefined;
 
 var _error = __webpack_require__(1);
 
+var _util = __webpack_require__(0);
+
 var _index = __webpack_require__(15);
 
 //查找元素 不存在则返回
@@ -1917,12 +1936,14 @@ var initCompiler = exports.initCompiler = function initCompiler(vue) {
 	var option = vue._option;
 	var el = option.el;
 	el = queryDom(el);
-	if (!vue._rootParent) {
-		vue._rootParent = el.parentNode;
-	}
-	if (!el) {
+	if (!el || !(0, _util.isElement)(el)) {
 		(0, _error.warnError)('Compiler Error: el not is Dom NodeType or not query element');
 		return false;
+	}
+	if (!vue._rootParent && el.nodeName !== 'BODY') {
+		vue._rootParent = el.parentNode;
+	} else {
+		vue._rootParent = el;
 	}
 	template = option.template || getOuterHTML(el);
 	//编译元素
